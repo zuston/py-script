@@ -1,0 +1,1126 @@
+
+
+
+<script  src="/sipopublicsearch/common-ui/js/jqSelect/js/jquery.jqSelect.js"></script>
+<link rel="stylesheet" href="/sipopublicsearch/common-ui/js/jqSelect/css/jquery.jqSelect.css" type="text/css"></link>
+
+	
+	<!-- 同族、收藏需要引用的css -->
+	<link rel="stylesheet" href="http://www.pss-system.gov.cn:80/sipopublicsearch/common-ui/js/pagnation/jquery.pagination.css">
+	<link rel="stylesheet" href="http://www.pss-system.gov.cn:80/sipopublicsearch/search-ui/app/searchliteradb/css/searchliteradbadd.css"/>
+	<link rel="stylesheet" href="http://www.pss-system.gov.cn:80/sipopublicsearch/search-ui/app/searchtools/dialog/quote.css"/>
+	<link rel="stylesheet" href="http://www.pss-system.gov.cn:80/sipopublicsearch/search-ui/app/cognationsearch/css/query-cognation-search.css"/>
+	<!-- 同族、收藏需要引用的js -->
+	<script type="text/javascript" src="http://www.pss-system.gov.cn:80/sipopublicsearch/common-ui/js/pagnation/jquery.pagination-1.2.7.js"></script>
+	<script type="text/javascript" src="http://www.pss-system.gov.cn:80/sipopublicsearch/search-ui/app/cognationsearch/js/query-cognation-search.js"></script>
+	<script type="text/javascript" src="http://www.pss-system.gov.cn:80/sipopublicsearch/search-ui/app/searchtools/dialog/quote.js"></script>
+	<script type="text/javascript" src="http://www.pss-system.gov.cn:80/sipopublicsearch/search-ui/app/searchliteradb/js/searchliteradbadd.js"></script>
+	<script type="text/javascript" src="http://www.pss-system.gov.cn:80/sipopublicsearch/search-ui/app/viewtools/js/cognation_downloadLitera.js"></script>
+	<script type="text/javascript" src="http://www.pss-system.gov.cn:80/sipopublicsearch/search-ui/app/searchtools/js/examine.js"></script>
+	<script type="text/javascript" src="http://www.pss-system.gov.cn:80/sipopublicsearch/search-ui/app/searchtools/dialog/law_state.js"></script>
+	<script type="text/javascript" src="http://www.pss-system.gov.cn:80/sipopublicsearch/analysis-ui/app/project/js/build-project.js"></script>
+	<script type="text/javascript" src="http://www.pss-system.gov.cn:80/sipopublicsearch/search-ui/app/viewtools/js/translate.js"></script>
+	<script type="text/javascript" src="http://www.pss-system.gov.cn:80/sipopublicsearch/search-ui/app/result/js/result_list.js"></script>
+
+	<style>
+    	body .main-body1{
+    		width: 100%;
+    	}
+    	.test-class{
+    		width:1190px;
+    		margin:0 auto;
+    		margin-bottom:20px;
+    	}
+    </style>
+
+	<!-- result_menus.jsp start -->
+	
+
+
+<script type="text/javascript" src="http://www.pss-system.gov.cn:80/sipopublicsearch/search-ui/app/result/js/result_menus.js"></script>
+<div class="ri-top clear" style="margin-bottom: 20px;" id='view_mode_selector'>
+    <div id="result_view_mode" class="btn-group">
+        <a href="javascript:void(0)" mode="SEARCH_MODE" class="select btn result-style-btn search-style-btn">搜索式</a>
+        <a href="javascript:void(0)" mode="TABLE_MODE" class="btn result-style-btn list-style-btn">列表式</a>
+        <a href="javascript:void(0)" mode="IMAGE_MODE" class="btn result-style-btn picture-style-btn">多图式</a>
+    </div>
+    <div class="select-group">
+		<div id="tool_sort" class="select in-bl" style="vertical-align:top; display:none;" data-height="30" data-width="120" data-border="false" data-handler="sort_tool_callback">
+			<div value="-APD" >申请日降序</div>
+			<div value="+APD" >申请日升序</div>
+			<div value="-PD" >公开日降序</div>
+			<div value="+PD" >公开日升序</div>
+		</div>
+    	<div id="tool_sort_fake" class="in-bl" style="height: 30px;width:120px;  margin: 0 6px;font-size: 1.6em;border: 1px solid rgb(213,219,231);vertical-align:top;line-height:30px;">
+    		<div style="padding-left:10px;">
+    			申请日降序
+    		</div>
+    	</div>
+        <a href="javascript:;" id="tool_filter" class="btn filter_btn">过滤</a>
+    </div>
+    <div class="page-group">
+        <div style='overflow:hidden;float:none;position:static;'><div class="uipage"><link href="http://www.pss-system.gov.cn:80/sipopublicsearch/common-ui/css/uiPage/uiPage.css" rel="stylesheet" type="text/css" /> <div class="page_top"> <a href="javascript:gotoPage('resultlistForm_top',0,true,'search_result')"><img src="/sipopublicsearch/wee/platform/common/images/page/page_1.gif" /></a> <a href="javascript:gotoPage('resultlistForm_top',0,true,'search_result')"><img src="/sipopublicsearch/wee/platform/common/images/page/page_2.gif" /></a> <a href="javascript:gotoPage('resultlistForm_top',24,true,'search_result')"><img src="/sipopublicsearch/wee/platform/common/images/page/page_3.gif" /></a> <a href="javascript:gotoPage('resultlistForm_top',10980,true,'search_result')"><img src="/sipopublicsearch/wee/platform/common/images/page/page_4.gif" /></a>第 <input type="text" style="height:25px;line-height:25px; text-align:center; width:40px;border:#c8c8c8 1px solid;padding:0;" value = '2'  onkeydown = "if(event.keyCode == 13){gotoPageNum('resultlistForm_top',this.value,'12','916','2',true,'search_result')}" /> 页 共 916 页 10984 条数据 </div> </div></div><form name='resultlistForm_top' id='resultlistForm_top'  action='/sipopublicsearch/patentsearch/showSearchResult-startWa.shtml'  method='post'><input type="hidden" name="resultPagination.limit" value="12" id="resultPagination.limit"/><input type="hidden" name="resultPagination.sumLimit" value="10" id="resultPagination.sumLimit"/><input type="hidden" name="resultPagination.start" value="12" id="start"/><input type="hidden" name="resultPagination.totalCount" value="10984" id="resultPagination.totalCount"/><input type="hidden" name="resultQC.executableSearchExp" value=""/><input type="hidden" name="searchCondition.searchType" value="Sino_foreign"/><input type="hidden" name="searchCondition.resultMode" value="TABLE_MODE"/><input type="hidden" name="searchCondition.searchKeywords_str" value="@@[上][ ]{0,}[海][ ]{0,}[大][ ]{0,}[学][ ]{0,}@@"/><input type="hidden" name="searchCondition.literatureSF" value="复合申请人与发明人=(上海大学)"/><input type="hidden" name="searchCondition.sortFields" value="-APD,+PD"/><input type="hidden" name="searchCondition.searchKeywords" value="[上][ ]{0,}[海][ ]{0,}[大][ ]{0,}[学][ ]{0,}"/><input type="hidden" name="resultPagination.sumLimit" value="10"/><input type="hidden" name="searchCondition.searchExp" value="复合申请人与发明人=(上海大学)"/><input type="hidden" name="wee.bizlog.modulelevel" value="0200602"/><input type="hidden" name="searchCondition.executableSearchExp" value="VDB:(IBI='上海大学')"/></form>
+    </div>
+</div>
+	
+	
+
+	<!-- 浮动助手start -->
+	
+
+
+<script src="http://www.pss-system.gov.cn:80/sipopublicsearch/search-ui/app/result/js/result_assist_common.js" ></script>
+<script type="text/javascript" src="http://www.pss-system.gov.cn:80/sipopublicsearch/search-ui/app/result/js/result_assist.js"></script>
+
+<!--新右侧菜单 -->
+    <div class="fixed-menu1" id="fixed-menu1">
+        <ul>
+            <li>
+                <a id="assist_selectpage" href="javascript:;" class="btn-hover btn-select-all">
+                    <strong>全选本页</strong>
+                </a>
+            </li>
+            <li>
+                <a id="assist_detail" href="javascript:;" class="btn-hover btn-full-text">
+                    <strong>详 览</strong>
+                </a>
+            </li>
+            
+            
+            
+            <li>
+                <a id="assist_detail_all" href="javascript:;" class="btn-hover btn-full-text-all">
+                    <strong>详览全部</strong>
+                </a>
+            </li>
+            
+            
+        </ul>
+    </div>
+
+    <div class="to-top-area">
+        <a href="javascript:;" class="btn-hover btn-to-top">
+            <strong>返回顶部</strong>
+        </a>
+    </div>
+    <!--/新右侧菜单 -->
+	<!-- 浮动助手end -->
+
+	<!-- 判断显示方式：搜索式 -->
+	
+	
+	
+		
+
+
+
+<!DOCTYPE HTML>
+
+<!--<link rel="stylesheet"
+	href="http://10.78.0.11:8888/pubsearch/search-ui/app/result/css/list-mode.css" />-->
+<link rel="stylesheet" href="http://www.pss-system.gov.cn:80/sipopublicsearch/search-ui/app/result/css/list-mode.css" />
+<div class="re-content" style="margin-top:0;position:relative;padding-bottom:54px;">
+	<div class="re-table">
+		<table>
+			<thead>
+				<tr>
+					<th style="width: 30px;">
+						<input type="checkbox" name="patent_flag_all" />
+					</th>
+					<th style="width:120px;">
+						申请号
+					</th>
+					<th style="width: 80px;">
+						申请日
+					</th>
+					<th style="width: 110px;">
+						公开(公告)号
+					</th>
+					<th style="width: 110px;">
+						公开(公告)日
+					</th>
+					<th class="w140">
+						发明名称
+					</th>
+					<th class="w132">
+						申请(专利权)人
+					</th>
+					<th style="width: 205px;">
+						操作
+					</th>
+				</tr>
+			</thead>
+			<tbody id="tbody">
+				
+
+					
+						<tr class="patent">
+					
+					
+					<td>
+						<input type="checkbox" name="patent_flag" />
+					</td>
+					<td>
+						<span title="CN201610399423">CN201610399423</span>
+					</td>
+					<td>
+						2016.06.08
+					</td>
+					<td>
+						<span title="CN105884771A">CN105884771A</span>
+					</td>
+					<td>
+						2016.08.24
+					</td>
+					<td>
+						<span title="三氟甲基吡咯并异喹啉衍生物及其合成方法">三氟甲基吡咯并异喹啉衍生物及其合成方法</span>
+					</td>
+					<td>
+						
+						<span style="vertical-align:text-bottom;" title="<FONT>上海大学</FONT>;"><FONT>上海大学</FONT>;</span>
+					</td>
+					<td>
+						
+							<a href="javascript:void(0);" role="detail" title="详览" class="full-text_sm in-bl"></a>
+							
+							
+                            
+							
+							<a href="javascript:void(0);" role="proposor" _name="<FONT>上海大学</FONT>;" _address=" 上海市宝山区上大路99号;" _zipCode="200444;" _country="上海" title="申请人" class="proposor_sm in-bl"></a>
+							<a href="javascript:void(0);" role="lawState" pn="CN105884771A" title="法律状态" class="lawstate_sm in-bl"></a>
+						
+					</td>
+					<!-- 文献标识 -->
+					<input type="hidden" name="vIdHidden" value='CN201610399423' />
+					<!-- 文献唯一标识 -->
+					<input type="hidden" name="idHidden" value='CN201610399423.420160824FM'>
+					<!-- 发明名称 -->
+					<input type="hidden" name="titleHidden"
+						value='三氟甲基吡咯并异喹啉衍生物及其合成方法'>
+					<!-- nrdAN -->
+					<input type="hidden" name="nrdAnHidden" value='CN201610399423'>
+					<!-- nrdAPD -->
+					<input type="hidden" name="nrdAdpHidden"
+						value='2016.06.08'>
+					<!-- nrdPD -->
+					<input type="hidden" name="nrdpdHidden" value='2016.08.24'>
+					<!-- nrdPN -->
+					<input type="hidden" name="nrdPnHidden" value='CN105884771A'>
+					<!-- ansn -->
+					<input type="hidden" name="appSnHidden" value='CN201600039942300.0001'>
+					<!-- pnsn -->
+					<input type="hidden" name="pnSnHidden" value='CN999999999999000000010588477100A.0000'>
+					<input type="hidden" name="langHidden" value='CN'>
+					<input type="hidden" name="docStatusHidden"
+						value='PUB'>
+					<!-- 申请人/专利权人 -->
+					<input type="hidden" name="appNameHidden"
+						value='<FONT>上海大学</FONT>;'>
+					<!-- 地址 -->
+					<input type="hidden" name="appAddrHidden" value=' 上海市宝山区上大路99号;'>
+					<!-- 邮编 -->
+					<input type="hidden" name="appZipHidden" value='200444;'>
+					<!-- 申请人/专利权人所在国代码 -->
+					<input type="hidden" name="appCountryHidden"
+						value='上海'>
+					</tr>
+				
+
+					
+					
+						<tr class="even patent">
+					
+					<td>
+						<input type="checkbox" name="patent_flag" />
+					</td>
+					<td>
+						<span title="CN201610399478">CN201610399478</span>
+					</td>
+					<td>
+						2016.06.08
+					</td>
+					<td>
+						<span title="CN105906635A">CN105906635A</span>
+					</td>
+					<td>
+						2016.08.31
+					</td>
+					<td>
+						<span title="全氟烷基苯并氮杂*并喹喔啉衍生物及其合成方法">全氟烷基苯并氮杂*并喹喔啉衍生物及其合成方法</span>
+					</td>
+					<td>
+						
+						<span style="vertical-align:text-bottom;" title="<FONT>上海大学</FONT>;"><FONT>上海大学</FONT>;</span>
+					</td>
+					<td>
+						
+							<a href="javascript:void(0);" role="detail" title="详览" class="full-text_sm in-bl"></a>
+							
+							
+                            
+							
+							<a href="javascript:void(0);" role="proposor" _name="<FONT>上海大学</FONT>;" _address=" 上海市宝山区上大路99号;" _zipCode="200444;" _country="" title="申请人" class="proposor_sm in-bl"></a>
+							<a href="javascript:void(0);" role="lawState" pn="CN105906635A" title="法律状态" class="lawstate_sm in-bl"></a>
+						
+					</td>
+					<!-- 文献标识 -->
+					<input type="hidden" name="vIdHidden" value='CN201610399478' />
+					<!-- 文献唯一标识 -->
+					<input type="hidden" name="idHidden" value='CN201610399478.520160831FM'>
+					<!-- 发明名称 -->
+					<input type="hidden" name="titleHidden"
+						value='全氟烷基苯并氮杂*并喹喔啉衍生物及其合成方法'>
+					<!-- nrdAN -->
+					<input type="hidden" name="nrdAnHidden" value='CN201610399478'>
+					<!-- nrdAPD -->
+					<input type="hidden" name="nrdAdpHidden"
+						value='2016.06.08'>
+					<!-- nrdPD -->
+					<input type="hidden" name="nrdpdHidden" value='2016.08.31'>
+					<!-- nrdPN -->
+					<input type="hidden" name="nrdPnHidden" value='CN105906635A'>
+					<!-- ansn -->
+					<input type="hidden" name="appSnHidden" value='CN201600039947800.0001'>
+					<!-- pnsn -->
+					<input type="hidden" name="pnSnHidden" value='CN999999999999000000010590663500A.0000'>
+					<input type="hidden" name="langHidden" value='CN'>
+					<input type="hidden" name="docStatusHidden"
+						value='PUB'>
+					<!-- 申请人/专利权人 -->
+					<input type="hidden" name="appNameHidden"
+						value='<FONT>上海大学</FONT>;'>
+					<!-- 地址 -->
+					<input type="hidden" name="appAddrHidden" value=' 上海市宝山区上大路99号;'>
+					<!-- 邮编 -->
+					<input type="hidden" name="appZipHidden" value='200444;'>
+					<!-- 申请人/专利权人所在国代码 -->
+					<input type="hidden" name="appCountryHidden"
+						value=''>
+					</tr>
+				
+
+					
+						<tr class="patent">
+					
+					
+					<td>
+						<input type="checkbox" name="patent_flag" />
+					</td>
+					<td>
+						<span title="CN201610386602">CN201610386602</span>
+					</td>
+					<td>
+						2016.06.04
+					</td>
+					<td>
+						<span title="CN105881493A">CN105881493A</span>
+					</td>
+					<td>
+						2016.08.24
+					</td>
+					<td>
+						<span title="一种环足式微型蠕动机器人">一种环足式微型蠕动机器人</span>
+					</td>
+					<td>
+						
+						<span style="vertical-align:text-bottom;" title="<FONT>上海大学</FONT>;"><FONT>上海大学</FONT>;</span>
+					</td>
+					<td>
+						
+							<a href="javascript:void(0);" role="detail" title="详览" class="full-text_sm in-bl"></a>
+							
+							
+                            
+							
+							<a href="javascript:void(0);" role="proposor" _name="<FONT>上海大学</FONT>;" _address=" 上海市宝山区上大路99号;" _zipCode="200444;" _country="上海" title="申请人" class="proposor_sm in-bl"></a>
+							<a href="javascript:void(0);" role="lawState" pn="CN105881493A" title="法律状态" class="lawstate_sm in-bl"></a>
+						
+					</td>
+					<!-- 文献标识 -->
+					<input type="hidden" name="vIdHidden" value='CN201610386602' />
+					<!-- 文献唯一标识 -->
+					<input type="hidden" name="idHidden" value='CN201610386602.420160824FM'>
+					<!-- 发明名称 -->
+					<input type="hidden" name="titleHidden"
+						value='一种环足式微型蠕动机器人'>
+					<!-- nrdAN -->
+					<input type="hidden" name="nrdAnHidden" value='CN201610386602'>
+					<!-- nrdAPD -->
+					<input type="hidden" name="nrdAdpHidden"
+						value='2016.06.04'>
+					<!-- nrdPD -->
+					<input type="hidden" name="nrdpdHidden" value='2016.08.24'>
+					<!-- nrdPN -->
+					<input type="hidden" name="nrdPnHidden" value='CN105881493A'>
+					<!-- ansn -->
+					<input type="hidden" name="appSnHidden" value='CN201600038660200.0001'>
+					<!-- pnsn -->
+					<input type="hidden" name="pnSnHidden" value='CN999999999999000000010588149300A.0000'>
+					<input type="hidden" name="langHidden" value='CN'>
+					<input type="hidden" name="docStatusHidden"
+						value='PUB'>
+					<!-- 申请人/专利权人 -->
+					<input type="hidden" name="appNameHidden"
+						value='<FONT>上海大学</FONT>;'>
+					<!-- 地址 -->
+					<input type="hidden" name="appAddrHidden" value=' 上海市宝山区上大路99号;'>
+					<!-- 邮编 -->
+					<input type="hidden" name="appZipHidden" value='200444;'>
+					<!-- 申请人/专利权人所在国代码 -->
+					<input type="hidden" name="appCountryHidden"
+						value='上海'>
+					</tr>
+				
+
+					
+					
+						<tr class="even patent">
+					
+					<td>
+						<input type="checkbox" name="patent_flag" />
+					</td>
+					<td>
+						<span title="CN201610386600">CN201610386600</span>
+					</td>
+					<td>
+						2016.06.04
+					</td>
+					<td>
+						<span title="CN105877062A">CN105877062A</span>
+					</td>
+					<td>
+						2016.08.24
+					</td>
+					<td>
+						<span title="一种电动助力行李箱传动装置">一种电动助力行李箱传动装置</span>
+					</td>
+					<td>
+						
+						<span style="vertical-align:text-bottom;" title="<FONT>上海大学</FONT>;"><FONT>上海大学</FONT>;</span>
+					</td>
+					<td>
+						
+							<a href="javascript:void(0);" role="detail" title="详览" class="full-text_sm in-bl"></a>
+							
+							
+                            
+							
+							<a href="javascript:void(0);" role="proposor" _name="<FONT>上海大学</FONT>;" _address=" 上海市宝山区上大路99号;" _zipCode="200444;" _country="上海" title="申请人" class="proposor_sm in-bl"></a>
+							<a href="javascript:void(0);" role="lawState" pn="CN105877062A" title="法律状态" class="lawstate_sm in-bl"></a>
+						
+					</td>
+					<!-- 文献标识 -->
+					<input type="hidden" name="vIdHidden" value='CN201610386600' />
+					<!-- 文献唯一标识 -->
+					<input type="hidden" name="idHidden" value='CN201610386600.520160824FM'>
+					<!-- 发明名称 -->
+					<input type="hidden" name="titleHidden"
+						value='一种电动助力行李箱传动装置'>
+					<!-- nrdAN -->
+					<input type="hidden" name="nrdAnHidden" value='CN201610386600'>
+					<!-- nrdAPD -->
+					<input type="hidden" name="nrdAdpHidden"
+						value='2016.06.04'>
+					<!-- nrdPD -->
+					<input type="hidden" name="nrdpdHidden" value='2016.08.24'>
+					<!-- nrdPN -->
+					<input type="hidden" name="nrdPnHidden" value='CN105877062A'>
+					<!-- ansn -->
+					<input type="hidden" name="appSnHidden" value='CN201600038660000.0001'>
+					<!-- pnsn -->
+					<input type="hidden" name="pnSnHidden" value='CN999999999999000000010587706200A.0000'>
+					<input type="hidden" name="langHidden" value='CN'>
+					<input type="hidden" name="docStatusHidden"
+						value='PUB'>
+					<!-- 申请人/专利权人 -->
+					<input type="hidden" name="appNameHidden"
+						value='<FONT>上海大学</FONT>;'>
+					<!-- 地址 -->
+					<input type="hidden" name="appAddrHidden" value=' 上海市宝山区上大路99号;'>
+					<!-- 邮编 -->
+					<input type="hidden" name="appZipHidden" value='200444;'>
+					<!-- 申请人/专利权人所在国代码 -->
+					<input type="hidden" name="appCountryHidden"
+						value='上海'>
+					</tr>
+				
+
+					
+						<tr class="patent">
+					
+					
+					<td>
+						<input type="checkbox" name="patent_flag" />
+					</td>
+					<td>
+						<span title="CN201610386595">CN201610386595</span>
+					</td>
+					<td>
+						2016.06.04
+					</td>
+					<td>
+						<span title="CN105904257A">CN105904257A</span>
+					</td>
+					<td>
+						2016.08.31
+					</td>
+					<td>
+						<span title="一种气缸外涨夹紧夹具">一种气缸外涨夹紧夹具</span>
+					</td>
+					<td>
+						
+						<span style="vertical-align:text-bottom;" title="<FONT>上海大学</FONT>;"><FONT>上海大学</FONT>;</span>
+					</td>
+					<td>
+						
+							<a href="javascript:void(0);" role="detail" title="详览" class="full-text_sm in-bl"></a>
+							
+							
+                            
+							
+							<a href="javascript:void(0);" role="proposor" _name="<FONT>上海大学</FONT>;" _address=" 上海市宝山区上大路99号;" _zipCode="200444;" _country="" title="申请人" class="proposor_sm in-bl"></a>
+							<a href="javascript:void(0);" role="lawState" pn="CN105904257A" title="法律状态" class="lawstate_sm in-bl"></a>
+						
+					</td>
+					<!-- 文献标识 -->
+					<input type="hidden" name="vIdHidden" value='CN201610386595' />
+					<!-- 文献唯一标识 -->
+					<input type="hidden" name="idHidden" value='CN201610386595.820160831FM'>
+					<!-- 发明名称 -->
+					<input type="hidden" name="titleHidden"
+						value='一种气缸外涨夹紧夹具'>
+					<!-- nrdAN -->
+					<input type="hidden" name="nrdAnHidden" value='CN201610386595'>
+					<!-- nrdAPD -->
+					<input type="hidden" name="nrdAdpHidden"
+						value='2016.06.04'>
+					<!-- nrdPD -->
+					<input type="hidden" name="nrdpdHidden" value='2016.08.31'>
+					<!-- nrdPN -->
+					<input type="hidden" name="nrdPnHidden" value='CN105904257A'>
+					<!-- ansn -->
+					<input type="hidden" name="appSnHidden" value='CN201600038659500.0001'>
+					<!-- pnsn -->
+					<input type="hidden" name="pnSnHidden" value='CN999999999999000000010590425700A.0000'>
+					<input type="hidden" name="langHidden" value='CN'>
+					<input type="hidden" name="docStatusHidden"
+						value='PUB'>
+					<!-- 申请人/专利权人 -->
+					<input type="hidden" name="appNameHidden"
+						value='<FONT>上海大学</FONT>;'>
+					<!-- 地址 -->
+					<input type="hidden" name="appAddrHidden" value=' 上海市宝山区上大路99号;'>
+					<!-- 邮编 -->
+					<input type="hidden" name="appZipHidden" value='200444;'>
+					<!-- 申请人/专利权人所在国代码 -->
+					<input type="hidden" name="appCountryHidden"
+						value=''>
+					</tr>
+				
+
+					
+					
+						<tr class="even patent">
+					
+					<td>
+						<input type="checkbox" name="patent_flag" />
+					</td>
+					<td>
+						<span title="CN201610386603">CN201610386603</span>
+					</td>
+					<td>
+						2016.06.04
+					</td>
+					<td>
+						<span title="CN105904401A">CN105904401A</span>
+					</td>
+					<td>
+						2016.08.31
+					</td>
+					<td>
+						<span title="一种导杆式卡簧装配装置">一种导杆式卡簧装配装置</span>
+					</td>
+					<td>
+						
+						<span style="vertical-align:text-bottom;" title="<FONT>上海大学</FONT>;"><FONT>上海大学</FONT>;</span>
+					</td>
+					<td>
+						
+							<a href="javascript:void(0);" role="detail" title="详览" class="full-text_sm in-bl"></a>
+							
+							
+                            
+							
+							<a href="javascript:void(0);" role="proposor" _name="<FONT>上海大学</FONT>;" _address=" 上海市宝山区上大路99号;" _zipCode="200444;" _country="" title="申请人" class="proposor_sm in-bl"></a>
+							<a href="javascript:void(0);" role="lawState" pn="CN105904401A" title="法律状态" class="lawstate_sm in-bl"></a>
+						
+					</td>
+					<!-- 文献标识 -->
+					<input type="hidden" name="vIdHidden" value='CN201610386603' />
+					<!-- 文献唯一标识 -->
+					<input type="hidden" name="idHidden" value='CN201610386603.920160831FM'>
+					<!-- 发明名称 -->
+					<input type="hidden" name="titleHidden"
+						value='一种导杆式卡簧装配装置'>
+					<!-- nrdAN -->
+					<input type="hidden" name="nrdAnHidden" value='CN201610386603'>
+					<!-- nrdAPD -->
+					<input type="hidden" name="nrdAdpHidden"
+						value='2016.06.04'>
+					<!-- nrdPD -->
+					<input type="hidden" name="nrdpdHidden" value='2016.08.31'>
+					<!-- nrdPN -->
+					<input type="hidden" name="nrdPnHidden" value='CN105904401A'>
+					<!-- ansn -->
+					<input type="hidden" name="appSnHidden" value='CN201600038660300.0001'>
+					<!-- pnsn -->
+					<input type="hidden" name="pnSnHidden" value='CN999999999999000000010590440100A.0000'>
+					<input type="hidden" name="langHidden" value='CN'>
+					<input type="hidden" name="docStatusHidden"
+						value='PUB'>
+					<!-- 申请人/专利权人 -->
+					<input type="hidden" name="appNameHidden"
+						value='<FONT>上海大学</FONT>;'>
+					<!-- 地址 -->
+					<input type="hidden" name="appAddrHidden" value=' 上海市宝山区上大路99号;'>
+					<!-- 邮编 -->
+					<input type="hidden" name="appZipHidden" value='200444;'>
+					<!-- 申请人/专利权人所在国代码 -->
+					<input type="hidden" name="appCountryHidden"
+						value=''>
+					</tr>
+				
+
+					
+						<tr class="patent">
+					
+					
+					<td>
+						<input type="checkbox" name="patent_flag" />
+					</td>
+					<td>
+						<span title="CN201610389054">CN201610389054</span>
+					</td>
+					<td>
+						2016.06.03
+					</td>
+					<td>
+						<span title="CN105854806A">CN105854806A</span>
+					</td>
+					<td>
+						2016.08.17
+					</td>
+					<td>
+						<span title="负载镧铁复合金属氧化物的膨胀石墨除磷剂及其制备方法">负载镧铁复合金属氧化物的膨胀石墨除磷剂及其制备方法</span>
+					</td>
+					<td>
+						
+						<span style="vertical-align:text-bottom;" title="<FONT>上海大学</FONT>;"><FONT>上海大学</FONT>;</span>
+					</td>
+					<td>
+						
+							<a href="javascript:void(0);" role="detail" title="详览" class="full-text_sm in-bl"></a>
+							
+							
+                            
+							
+							<a href="javascript:void(0);" role="proposor" _name="<FONT>上海大学</FONT>;" _address=" 上海市宝山区上大路99号;" _zipCode="200444;" _country="上海" title="申请人" class="proposor_sm in-bl"></a>
+							<a href="javascript:void(0);" role="lawState" pn="CN105854806A" title="法律状态" class="lawstate_sm in-bl"></a>
+						
+					</td>
+					<!-- 文献标识 -->
+					<input type="hidden" name="vIdHidden" value='CN201610389054' />
+					<!-- 文献唯一标识 -->
+					<input type="hidden" name="idHidden" value='CN201610389054.020160817FM'>
+					<!-- 发明名称 -->
+					<input type="hidden" name="titleHidden"
+						value='负载镧铁复合金属氧化物的膨胀石墨除磷剂及其制备方法'>
+					<!-- nrdAN -->
+					<input type="hidden" name="nrdAnHidden" value='CN201610389054'>
+					<!-- nrdAPD -->
+					<input type="hidden" name="nrdAdpHidden"
+						value='2016.06.03'>
+					<!-- nrdPD -->
+					<input type="hidden" name="nrdpdHidden" value='2016.08.17'>
+					<!-- nrdPN -->
+					<input type="hidden" name="nrdPnHidden" value='CN105854806A'>
+					<!-- ansn -->
+					<input type="hidden" name="appSnHidden" value='CN201600038905400.0001'>
+					<!-- pnsn -->
+					<input type="hidden" name="pnSnHidden" value='CN999999999999000000010585480600A.0000'>
+					<input type="hidden" name="langHidden" value='CN'>
+					<input type="hidden" name="docStatusHidden"
+						value='PUB'>
+					<!-- 申请人/专利权人 -->
+					<input type="hidden" name="appNameHidden"
+						value='<FONT>上海大学</FONT>;'>
+					<!-- 地址 -->
+					<input type="hidden" name="appAddrHidden" value=' 上海市宝山区上大路99号;'>
+					<!-- 邮编 -->
+					<input type="hidden" name="appZipHidden" value='200444;'>
+					<!-- 申请人/专利权人所在国代码 -->
+					<input type="hidden" name="appCountryHidden"
+						value='上海'>
+					</tr>
+				
+
+					
+					
+						<tr class="even patent">
+					
+					<td>
+						<input type="checkbox" name="patent_flag" />
+					</td>
+					<td>
+						<span title="CN201610374329">CN201610374329</span>
+					</td>
+					<td>
+						2016.05.31
+					</td>
+					<td>
+						<span title="CN105839169A">CN105839169A</span>
+					</td>
+					<td>
+						2016.08.10
+					</td>
+					<td>
+						<span title="材料的电沉积高通量制备设备与方法">材料的电沉积高通量制备设备与方法</span>
+					</td>
+					<td>
+						
+						<span style="vertical-align:text-bottom;" title="<FONT>上海大学</FONT>;"><FONT>上海大学</FONT>;</span>
+					</td>
+					<td>
+						
+							<a href="javascript:void(0);" role="detail" title="详览" class="full-text_sm in-bl"></a>
+							
+							
+                            
+							
+							<a href="javascript:void(0);" role="proposor" _name="<FONT>上海大学</FONT>;" _address=" 上海市宝山区上大路99号;" _zipCode="200444;" _country="上海" title="申请人" class="proposor_sm in-bl"></a>
+							<a href="javascript:void(0);" role="lawState" pn="CN105839169A" title="法律状态" class="lawstate_sm in-bl"></a>
+						
+					</td>
+					<!-- 文献标识 -->
+					<input type="hidden" name="vIdHidden" value='CN201610374329' />
+					<!-- 文献唯一标识 -->
+					<input type="hidden" name="idHidden" value='CN201610374329.320160810FM'>
+					<!-- 发明名称 -->
+					<input type="hidden" name="titleHidden"
+						value='材料的电沉积高通量制备设备与方法'>
+					<!-- nrdAN -->
+					<input type="hidden" name="nrdAnHidden" value='CN201610374329'>
+					<!-- nrdAPD -->
+					<input type="hidden" name="nrdAdpHidden"
+						value='2016.05.31'>
+					<!-- nrdPD -->
+					<input type="hidden" name="nrdpdHidden" value='2016.08.10'>
+					<!-- nrdPN -->
+					<input type="hidden" name="nrdPnHidden" value='CN105839169A'>
+					<!-- ansn -->
+					<input type="hidden" name="appSnHidden" value='CN201600037432900.0001'>
+					<!-- pnsn -->
+					<input type="hidden" name="pnSnHidden" value='CN999999999999000000010583916900A.0000'>
+					<input type="hidden" name="langHidden" value='CN'>
+					<input type="hidden" name="docStatusHidden"
+						value='PUB'>
+					<!-- 申请人/专利权人 -->
+					<input type="hidden" name="appNameHidden"
+						value='<FONT>上海大学</FONT>;'>
+					<!-- 地址 -->
+					<input type="hidden" name="appAddrHidden" value=' 上海市宝山区上大路99号;'>
+					<!-- 邮编 -->
+					<input type="hidden" name="appZipHidden" value='200444;'>
+					<!-- 申请人/专利权人所在国代码 -->
+					<input type="hidden" name="appCountryHidden"
+						value='上海'>
+					</tr>
+				
+
+					
+						<tr class="patent">
+					
+					
+					<td>
+						<input type="checkbox" name="patent_flag" />
+					</td>
+					<td>
+						<span title="CN201610374093">CN201610374093</span>
+					</td>
+					<td>
+						2016.05.31
+					</td>
+					<td>
+						<span title="CN105842127A">CN105842127A</span>
+					</td>
+					<td>
+						2016.08.10
+					</td>
+					<td>
+						<span title="用于研究驱油用泡沫渗流运移过程形态的实验装置">用于研究驱油用泡沫渗流运移过程形态的实验装置</span>
+					</td>
+					<td>
+						
+						<span style="vertical-align:text-bottom;" title="<FONT>上海大学</FONT>;"><FONT>上海大学</FONT>;</span>
+					</td>
+					<td>
+						
+							<a href="javascript:void(0);" role="detail" title="详览" class="full-text_sm in-bl"></a>
+							
+							
+                            
+							
+							<a href="javascript:void(0);" role="proposor" _name="<FONT>上海大学</FONT>;" _address=" 上海市宝山区上大路99号;" _zipCode="200444;" _country="上海" title="申请人" class="proposor_sm in-bl"></a>
+							<a href="javascript:void(0);" role="lawState" pn="CN105842127A" title="法律状态" class="lawstate_sm in-bl"></a>
+						
+					</td>
+					<!-- 文献标识 -->
+					<input type="hidden" name="vIdHidden" value='CN201610374093' />
+					<!-- 文献唯一标识 -->
+					<input type="hidden" name="idHidden" value='CN201610374093.320160810FM'>
+					<!-- 发明名称 -->
+					<input type="hidden" name="titleHidden"
+						value='用于研究驱油用泡沫渗流运移过程形态的实验装置'>
+					<!-- nrdAN -->
+					<input type="hidden" name="nrdAnHidden" value='CN201610374093'>
+					<!-- nrdAPD -->
+					<input type="hidden" name="nrdAdpHidden"
+						value='2016.05.31'>
+					<!-- nrdPD -->
+					<input type="hidden" name="nrdpdHidden" value='2016.08.10'>
+					<!-- nrdPN -->
+					<input type="hidden" name="nrdPnHidden" value='CN105842127A'>
+					<!-- ansn -->
+					<input type="hidden" name="appSnHidden" value='CN201600037409300.0001'>
+					<!-- pnsn -->
+					<input type="hidden" name="pnSnHidden" value='CN999999999999000000010584212700A.0000'>
+					<input type="hidden" name="langHidden" value='CN'>
+					<input type="hidden" name="docStatusHidden"
+						value='PUB'>
+					<!-- 申请人/专利权人 -->
+					<input type="hidden" name="appNameHidden"
+						value='<FONT>上海大学</FONT>;'>
+					<!-- 地址 -->
+					<input type="hidden" name="appAddrHidden" value=' 上海市宝山区上大路99号;'>
+					<!-- 邮编 -->
+					<input type="hidden" name="appZipHidden" value='200444;'>
+					<!-- 申请人/专利权人所在国代码 -->
+					<input type="hidden" name="appCountryHidden"
+						value='上海'>
+					</tr>
+				
+
+					
+					
+						<tr class="even patent">
+					
+					<td>
+						<input type="checkbox" name="patent_flag" />
+					</td>
+					<td>
+						<span title="CN201610372424">CN201610372424</span>
+					</td>
+					<td>
+						2016.05.31
+					</td>
+					<td>
+						<span title="CN105861955A">CN105861955A</span>
+					</td>
+					<td>
+						2016.08.17
+					</td>
+					<td>
+						<span title="一种经济型含硫易切削奥氏体不锈钢合金材料">一种经济型含硫易切削奥氏体不锈钢合金材料</span>
+					</td>
+					<td>
+						
+						<span style="vertical-align:text-bottom;" title="<FONT>上海大学</FONT>兴化特种不锈钢研究院;"><FONT>上海大学</FONT>兴化特种不锈钢研究院;</span>
+					</td>
+					<td>
+						
+							<a href="javascript:void(0);" role="detail" title="详览" class="full-text_sm in-bl"></a>
+							
+							
+                            
+							
+							<a href="javascript:void(0);" role="proposor" _name="<FONT>上海大学</FONT>兴化特种不锈钢研究院;" _address=" 江苏省泰州市兴化市戴南镇科技园区;" _zipCode="225721;" _country="江苏" title="申请人" class="proposor_sm in-bl"></a>
+							<a href="javascript:void(0);" role="lawState" pn="CN105861955A" title="法律状态" class="lawstate_sm in-bl"></a>
+						
+					</td>
+					<!-- 文献标识 -->
+					<input type="hidden" name="vIdHidden" value='CN201610372424' />
+					<!-- 文献唯一标识 -->
+					<input type="hidden" name="idHidden" value='CN201610372424.X20160817FM'>
+					<!-- 发明名称 -->
+					<input type="hidden" name="titleHidden"
+						value='一种经济型含硫易切削奥氏体不锈钢合金材料'>
+					<!-- nrdAN -->
+					<input type="hidden" name="nrdAnHidden" value='CN201610372424'>
+					<!-- nrdAPD -->
+					<input type="hidden" name="nrdAdpHidden"
+						value='2016.05.31'>
+					<!-- nrdPD -->
+					<input type="hidden" name="nrdpdHidden" value='2016.08.17'>
+					<!-- nrdPN -->
+					<input type="hidden" name="nrdPnHidden" value='CN105861955A'>
+					<!-- ansn -->
+					<input type="hidden" name="appSnHidden" value='CN201600037242400.0001'>
+					<!-- pnsn -->
+					<input type="hidden" name="pnSnHidden" value='CN999999999999000000010586195500A.0000'>
+					<input type="hidden" name="langHidden" value='CN'>
+					<input type="hidden" name="docStatusHidden"
+						value='PUB'>
+					<!-- 申请人/专利权人 -->
+					<input type="hidden" name="appNameHidden"
+						value='<FONT>上海大学</FONT>兴化特种不锈钢研究院;'>
+					<!-- 地址 -->
+					<input type="hidden" name="appAddrHidden" value=' 江苏省泰州市兴化市戴南镇科技园区;'>
+					<!-- 邮编 -->
+					<input type="hidden" name="appZipHidden" value='225721;'>
+					<!-- 申请人/专利权人所在国代码 -->
+					<input type="hidden" name="appCountryHidden"
+						value='江苏'>
+					</tr>
+				
+
+					
+						<tr class="patent">
+					
+					
+					<td>
+						<input type="checkbox" name="patent_flag" />
+					</td>
+					<td>
+						<span title="CN201610360623">CN201610360623</span>
+					</td>
+					<td>
+						2016.05.28
+					</td>
+					<td>
+						<span title="CN105838911A">CN105838911A</span>
+					</td>
+					<td>
+						2016.08.10
+					</td>
+					<td>
+						<span title="一种制备氧化铝弥散强化铜的方法">一种制备氧化铝弥散强化铜的方法</span>
+					</td>
+					<td>
+						
+						<span style="vertical-align:text-bottom;" title="<FONT>上海大学</FONT>;"><FONT>上海大学</FONT>;</span>
+					</td>
+					<td>
+						
+							<a href="javascript:void(0);" role="detail" title="详览" class="full-text_sm in-bl"></a>
+							
+							
+                            
+							
+							<a href="javascript:void(0);" role="proposor" _name="<FONT>上海大学</FONT>;" _address=" 上海市宝山区上大路99号;" _zipCode="200444;" _country="上海" title="申请人" class="proposor_sm in-bl"></a>
+							<a href="javascript:void(0);" role="lawState" pn="CN105838911A" title="法律状态" class="lawstate_sm in-bl"></a>
+						
+					</td>
+					<!-- 文献标识 -->
+					<input type="hidden" name="vIdHidden" value='CN201610360623' />
+					<!-- 文献唯一标识 -->
+					<input type="hidden" name="idHidden" value='CN201610360623.920160810FM'>
+					<!-- 发明名称 -->
+					<input type="hidden" name="titleHidden"
+						value='一种制备氧化铝弥散强化铜的方法'>
+					<!-- nrdAN -->
+					<input type="hidden" name="nrdAnHidden" value='CN201610360623'>
+					<!-- nrdAPD -->
+					<input type="hidden" name="nrdAdpHidden"
+						value='2016.05.28'>
+					<!-- nrdPD -->
+					<input type="hidden" name="nrdpdHidden" value='2016.08.10'>
+					<!-- nrdPN -->
+					<input type="hidden" name="nrdPnHidden" value='CN105838911A'>
+					<!-- ansn -->
+					<input type="hidden" name="appSnHidden" value='CN201600036062300.0001'>
+					<!-- pnsn -->
+					<input type="hidden" name="pnSnHidden" value='CN999999999999000000010583891100A.0000'>
+					<input type="hidden" name="langHidden" value='CN'>
+					<input type="hidden" name="docStatusHidden"
+						value='PUB'>
+					<!-- 申请人/专利权人 -->
+					<input type="hidden" name="appNameHidden"
+						value='<FONT>上海大学</FONT>;'>
+					<!-- 地址 -->
+					<input type="hidden" name="appAddrHidden" value=' 上海市宝山区上大路99号;'>
+					<!-- 邮编 -->
+					<input type="hidden" name="appZipHidden" value='200444;'>
+					<!-- 申请人/专利权人所在国代码 -->
+					<input type="hidden" name="appCountryHidden"
+						value='上海'>
+					</tr>
+				
+
+					
+					
+						<tr class="even patent">
+					
+					<td>
+						<input type="checkbox" name="patent_flag" />
+					</td>
+					<td>
+						<span title="CN201610360618">CN201610360618</span>
+					</td>
+					<td>
+						2016.05.28
+					</td>
+					<td>
+						<span title="CN105841761A">CN105841761A</span>
+					</td>
+					<td>
+						2016.08.10
+					</td>
+					<td>
+						<span title="变频电磁流量计励磁线圈的恒流控制系统">变频电磁流量计励磁线圈的恒流控制系统</span>
+					</td>
+					<td>
+						
+						<span style="vertical-align:text-bottom;" title="<FONT>上海大学</FONT>;"><FONT>上海大学</FONT>;</span>
+					</td>
+					<td>
+						
+							<a href="javascript:void(0);" role="detail" title="详览" class="full-text_sm in-bl"></a>
+							
+							
+                            
+							
+							<a href="javascript:void(0);" role="proposor" _name="<FONT>上海大学</FONT>;" _address=" 上海市宝山区上大路99号;" _zipCode="200444;" _country="上海" title="申请人" class="proposor_sm in-bl"></a>
+							<a href="javascript:void(0);" role="lawState" pn="CN105841761A" title="法律状态" class="lawstate_sm in-bl"></a>
+						
+					</td>
+					<!-- 文献标识 -->
+					<input type="hidden" name="vIdHidden" value='CN201610360618' />
+					<!-- 文献唯一标识 -->
+					<input type="hidden" name="idHidden" value='CN201610360618.820160810FM'>
+					<!-- 发明名称 -->
+					<input type="hidden" name="titleHidden"
+						value='变频电磁流量计励磁线圈的恒流控制系统'>
+					<!-- nrdAN -->
+					<input type="hidden" name="nrdAnHidden" value='CN201610360618'>
+					<!-- nrdAPD -->
+					<input type="hidden" name="nrdAdpHidden"
+						value='2016.05.28'>
+					<!-- nrdPD -->
+					<input type="hidden" name="nrdpdHidden" value='2016.08.10'>
+					<!-- nrdPN -->
+					<input type="hidden" name="nrdPnHidden" value='CN105841761A'>
+					<!-- ansn -->
+					<input type="hidden" name="appSnHidden" value='CN201600036061800.0001'>
+					<!-- pnsn -->
+					<input type="hidden" name="pnSnHidden" value='CN999999999999000000010584176100A.0000'>
+					<input type="hidden" name="langHidden" value='CN'>
+					<input type="hidden" name="docStatusHidden"
+						value='PUB'>
+					<!-- 申请人/专利权人 -->
+					<input type="hidden" name="appNameHidden"
+						value='<FONT>上海大学</FONT>;'>
+					<!-- 地址 -->
+					<input type="hidden" name="appAddrHidden" value=' 上海市宝山区上大路99号;'>
+					<!-- 邮编 -->
+					<input type="hidden" name="appZipHidden" value='200444;'>
+					<!-- 申请人/专利权人所在国代码 -->
+					<input type="hidden" name="appCountryHidden"
+						value='上海'>
+					</tr>
+				
+			</tbody>
+		</table>
+	</div>
+	<div class="re-page" style="height:44px;bottom:0;left:0;position:absolute;width:100%;">
+		<div class="re-page-content clear" style="width:auto;margin:auto;">
+			<div style='overflow:hidden;float:none;position:static;' class='re_page_content_bottom'><div class="uipage" style='min-width:700px;margin-left:50%;'><link href="http://www.pss-system.gov.cn:80/sipopublicsearch/common-ui/css/uiPage/uiPage.css" rel="stylesheet" type="text/css" /> <div class="page_bottom" style="white-space:nowrap;min-width:700px;margin-left:-50%;"> <a href="javascript:gotoPage('resultlistForm',0,true,'search_result')">首页</a> <a href="javascript:gotoPage('resultlistForm',0,true,'search_result')">上一页</a> <a href="javascript:gotoPage('resultlistForm',0,true,'search_result')">1</a> <a class="active" ><strong>2</strong></a><a href="javascript:gotoPage('resultlistForm',24,true,'search_result')">3</a> <a href="javascript:gotoPage('resultlistForm',36,true,'search_result')">4</a> <a href="javascript:gotoPage('resultlistForm',48,true,'search_result')">5</a> <a href="javascript:gotoPage('resultlistForm',24,true,'search_result')">下一页</a> <a href="javascript:gotoPage('resultlistForm',10980,true,'search_result')">尾页</a> <p> 共 916 页 </p><p> 到第</p><div class="input_bottom"><input id="txt" style="width: 60px;border: none;outline: none;font-size: 14px;background: none;padding:0;text-align: center;border: 0px solid #fff;" type="text" value = '2'  onkeydown = "if(event.keyCode == 13){gotoPageNum('resultlistForm',this.value,'12','916','2',true,'search_result')}" /> </div><p>页</p><a style='margin-left:15px;' href="javascript:gotoPageNum('resultlistForm',txt.value,'12','916','2',true,'search_result')">确定</a>  </div> </div></div><form name='resultlistForm' id='resultlistForm'  action='/sipopublicsearch/patentsearch/showSearchResult-startWa.shtml'  method='post'><input type="hidden" name="resultPagination.limit" value="12" id="resultPagination.limit"/><input type="hidden" name="resultPagination.sumLimit" value="10" id="resultPagination.sumLimit"/><input type="hidden" name="resultPagination.start" value="12" id="start"/><input type="hidden" name="resultPagination.totalCount" value="10984" id="resultPagination.totalCount"/><input type="hidden" name="resultQC.executableSearchExp" value=""/><input type="hidden" name="searchCondition.searchType" value="Sino_foreign"/><input type="hidden" name="searchCondition.resultMode" value="TABLE_MODE"/><input type="hidden" name="searchCondition.searchKeywords_str" value="@@[上][ ]{0,}[海][ ]{0,}[大][ ]{0,}[学][ ]{0,}@@"/><input type="hidden" name="searchCondition.literatureSF" value="复合申请人与发明人=(上海大学)"/><input type="hidden" name="searchCondition.sortFields" value="-APD,+PD"/><input type="hidden" name="searchCondition.searchKeywords" value="[上][ ]{0,}[海][ ]{0,}[大][ ]{0,}[学][ ]{0,}"/><input type="hidden" name="resultPagination.sumLimit" value="10"/><input type="hidden" name="searchCondition.searchExp" value="复合申请人与发明人=(上海大学)"/><input type="hidden" name="wee.bizlog.modulelevel" value="0200602"/><input type="hidden" name="searchCondition.executableSearchExp" value="VDB:(IBI='上海大学')"/></form>
+		</div>
+	</div>
+</div>
+	
+
+	<!-- 设置排序最大数量 -->
+	<input type="hidden" id="result_maxSortNum" name="maxSortNum" value="500">
+	<!-- 获取的记录总数 -->
+	<input type="hidden" id="result_totalCount" value="10984">
+<script>
+	function addParamToPageTag() {
+		/**resultlistForm为翻页组件ID**/
+		var start = $('#resultlistForm input[name="resultPagination.start"]').val();
+		// 第一次进入时才加载
+		if (start == 0) {
+			// 可执行检索式
+			var exe = $('#resultlistForm input[name="searchCondition.executableSearchExp"]').val();
+			if (exe == undefined || exe == '' || exe == null) {
+				$('#resultlistForm').append('<input type="hidden" name="searchCondition.executableSearchExp" value="'+ $('#result_executableSearchExp').text() + '"/>');
+				exe = $('#resultlistForm input[name="searchCondition.executableSearchExp"]').val();
+			}
+			
+			var drillSearchFlag = $('#drillSearchFlag');
+			if(drillSearchFlag == '' || drillSearchFlag == null || drillSearchFlag == undefined || drillSearchFlag == 'undefined'){
+				// 检索式id
+				var ssId = $('#resultlistForm input[name="searchCondition.executableSearchExp"]').val();
+				if (ssId == undefined || ssId == '' || ssId == null) {
+					$('#resultlistForm').append('<input type="hidden" name="searchCondition.ssId" value="'+ $('#result_ssId').val() + '"/>');
+				}
+			}
+			// dbId
+			var dbId = $('#resultlistForm input[name="searchCondition.dbId"]').val();
+			if (dbId == undefined) {
+				$('#resultlistForm').append('<input type="hidden" name="searchCondition.dbId" value=""/>');
+			}
+			// 判断可执行检索式中是否有dbid
+			if (exe.indexOf('VDB:') == -1) {
+				$('#resultlistForm input[name="searchCondition.dbId"]').val('VDB');
+			} else {
+				$('#resultlistForm input[name="searchCondition.dbId"]').val('');
+			}
+			// 检索文献库用检索式
+			var literatureSF = $('#resultlistForm input[name="searchCondition.literatureSF"]').val();
+			if (literatureSF == undefined) {
+				$('#resultlistForm').append("<input type=\"hidden\" name=\"searchCondition.literatureSF\" value=\""+ $('#result_literatureSF').text().replace(/"/gm,""") + "\"/>");
+			}
+			// 检索文献库用检索策略
+			var strategy = $('#resultlistForm input[name="searchCondition.strategy"]').val();
+			if (strategy == undefined) {
+				$('#resultlistForm').append('<input type="hidden" name="searchCondition.strategy" value="'+ $('#result_strategy').val() + '"/>');
+			}
+		}
+		// 检索因子--每次都重新传，因为分页标签不支持传数组
+		var keys = $('#resultlistForm input[name="searchCondition.searchKeywords"]').val();
+		var keywords = dealSearchKeywords;
+		if (keys == undefined) {
+			if (keywords.length > 0 && keywords[0] != '') {
+				keywords = new Array("").concat(keywords);
+			}
+		} else {
+			$('#resultlistForm input[name="searchCondition.searchKeywords"]') .remove();
+		}
+		$.each(keywords, function(i, value) {
+			$('#resultlistForm').append('<input type="hidden" name="searchCondition.searchKeywords" value="' + value + '"/>');
+		});
+	}
+	addParamToPageTag();
+</script>
+
+
+
+<!--  跳转详览 -->
+<form action="/sipopublicsearch/patentsearch/showViewList-jumpToView.shtml" target="_blank" method="post" id="detailViewForm">
+	<input type="hidden" name="viewQC.type" value="" id="viewQCType"/>
+	<input type="hidden" name="viewQC.viewLiteraQCList[0].type" value="COGNATION" id="viewQC_viewLiteraQCList_0__type"/>
+	<input type="hidden" name="viewQC.viewLiteraQCList[0].srcCnName" value="" id="coSrcCnName"/>
+	<input type="hidden" name="viewQC.viewLiteraQCList[0].srcEnName" value="" id="coSrcEnName"/>
+	<input type="hidden" name="viewQC.viewLiteraQCList[0].searchCondition.searchExp" value="" id="coExp"/>
+	<input type="hidden" name="viewQC.viewLiteraQCList[0].searchCondition.dbId" value="VDB" id="viewQC_viewLiteraQCList_0__searchCondition_dbId"/>
+	<input type="hidden" name="viewQC.viewLiteraQCList[1].type" value="ADDUCE" id="viewQC_viewLiteraQCList_1__type"/>
+	<input type="hidden" name="viewQC.viewLiteraQCList[1].srcCnName" value="" id="paSrcCnName"/>
+	<input type="hidden" name="viewQC.viewLiteraQCList[1].srcEnName" value="" id="paSrcEnName"/>
+	<input type="hidden" name="viewQC.viewLiteraQCList[1].searchCondition.searchExp" value="" id="paExp"/>
+	<input type="hidden" name="viewQC.viewLiteraQCList[1].searchCondition.dbId" value="VDB" id="viewQC_viewLiteraQCList_1__searchCondition_dbId"/>
+	<input type="hidden" name="viewQC.viewLiteraQCList[2].type" value="ADDUCED" id="viewQC_viewLiteraQCList_2__type"/>
+	<input type="hidden" name="viewQC.viewLiteraQCList[2].srcCnName" value="" id="citSrcCnName"/>
+	<input type="hidden" name="viewQC.viewLiteraQCList[2].srcEnName" value="" id="citSrcEnName"/>
+	<input type="hidden" name="viewQC.viewLiteraQCList[2].searchCondition.searchExp" value="" id="citExp"/>
+	<input type="hidden" name="viewQC.viewLiteraQCList[2].searchCondition.dbId" value="VDB" id="viewQC_viewLiteraQCList_2__searchCondition_dbId"/>
+</form>
