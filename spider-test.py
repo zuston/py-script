@@ -48,8 +48,9 @@ def postValue(searchContent, startYear, endYear):
     data = urllib.urlencode(values)
 
 
-    if(0):
+    if(proxyIpFlag==1):
         proxy_handler = urllib2.ProxyHandler({"http" : ip2port})
+        print "当前代理",ip2port
         opener = urllib2.build_opener(proxy_handler)
         urllib2.install_opener(opener)
 
@@ -91,20 +92,20 @@ def postValue(searchContent, startYear, endYear):
             # proxyIpFlag = 1
             # ip2port = getProxyIp()[0]+":"+getProxyIp()[1]
             # print ip2port
-            # return -2
-            exit(1)
+            return -2
+            # exit(1)
 
         else:
-            # print soup.title.string
-            # if soup.title.string == "404啦-页面没找哦，亲":
-            #     print resData
-            #     exit(1)
+            print soup.title.string
+            if soup.title.string == "404啦-页面没找哦，亲":
+                print resData
+                exit(1)
             print searchContent, "在", startYear, "到", endYear, "期间总计专利数:", "未查到有关专利信息"
             return 0
     except Exception:
         print "超时"
-        exit(1)
-        # return -2
+        # exit(1)
+        return -2
 
 
 def expandString(string):
@@ -118,7 +119,7 @@ def expandString(string):
 
 def readExcel():
     import xlrd
-    book = xlrd.open_workbook("0815patent.xlsx", encoding_override='utf-8')
+    book = xlrd.open_workbook("patent10.xlsx", encoding_override='utf-8')
     sh = book.sheet_by_index(pageIndex)
     # print sh.name
     # print sh.nrows
@@ -146,7 +147,7 @@ def writeExcel(resArray, tag_row):
     import xlrd
     from xlutils.copy import copy
 
-    rb = xlrd.open_workbook("0815patent.xlsx")
+    rb = xlrd.open_workbook("patent10.xlsx")
 
     # 通过sheet_by_index()获取的sheet没有write()方法
     rs = rb.sheet_by_index(2)
@@ -159,7 +160,7 @@ def writeExcel(resArray, tag_row):
     for data in resArray:
         ws.write(count, 3 + i, data)
         i = i + 1
-    wb.save('0815patent.xlsx')
+    wb.save('patent10.xlsx')
 
 
 def action():
@@ -191,7 +192,7 @@ def action():
                 oneCompanyRes.append(date)
 
             print "正在放入缓存list:当前位置:%d"%tag_row
-            writeExcel(oneCompanyRes, tag_row)
+            # writeExcel(oneCompanyRes, tag_row)
             tag_row += 1
             count += 1
             print ''

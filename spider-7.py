@@ -15,7 +15,7 @@ import random
 reload(sys)
 sys.setdefaultencoding("utf8")
 
-pageIndex = 9
+pageIndex = 7
 proxyIpFlag = 0
 ip2port = ''
 page = 1
@@ -118,7 +118,7 @@ def expandString(string):
 
 def readExcel():
     import xlrd
-    book = xlrd.open_workbook("0815patent.xlsx", encoding_override='utf-8')
+    book = xlrd.open_workbook("patent7.xlsx", encoding_override='utf-8')
     sh = book.sheet_by_index(pageIndex)
     # print sh.name
     # print sh.nrows
@@ -146,7 +146,7 @@ def writeExcel(resArray, tag_row):
     import xlrd
     from xlutils.copy import copy
 
-    rb = xlrd.open_workbook("0815patent.xlsx")
+    rb = xlrd.open_workbook("patent7.xlsx")
 
     # 通过sheet_by_index()获取的sheet没有write()方法
     rs = rb.sheet_by_index(2)
@@ -159,7 +159,7 @@ def writeExcel(resArray, tag_row):
     for data in resArray:
         ws.write(count, 3 + i, data)
         i = i + 1
-    wb.save('0815patent.xlsx')
+    wb.save('patent7.xlsx')
 
 
 def action():
