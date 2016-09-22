@@ -11,14 +11,17 @@ from StringIO import StringIO
 import time
 from bs4 import BeautifulSoup as bs
 import random
+from multiprocessing import Pool
 
 reload(sys)
 sys.setdefaultencoding("utf8")
 
-pageIndex = 9
+# pageIndex = 9
 proxyIpFlag = 0
 ip2port = ''
 page = 1
+
+excelName = './excel-test/multi-test.xlsx'
 
 def postValue(searchContent, startYear, endYear):
     global proxyIpFlag
@@ -116,9 +119,9 @@ def expandString(string):
     return resStr
 
 
-def readExcel():
+def readExcel(pageIndex):
     import xlrd
-    book = xlrd.open_workbook("./excel-data/0815patent.xlsx", encoding_override='utf-8')
+    book = xlrd.open_workbook(excelName, encoding_override='utf-8')
     sh = book.sheet_by_index(pageIndex)
     # print sh.name
     # print sh.nrows
@@ -142,11 +145,11 @@ def readExcel():
     return array
 
 
-def writeExcel(resArray, tag_row):
+def writeExcel(resArray, tag_row,pageIndex):
     import xlrd
     from xlutils.copy import copy
 
-    rb = xlrd.open_workbook("./excel-data/0815patent.xlsx")
+    rb = xlrd.open_workbook(excelName)
 
     # 通过sheet_by_index()获取的sheet没有write()方法
     rs = rb.sheet_by_index(2)
@@ -159,11 +162,11 @@ def writeExcel(resArray, tag_row):
     for data in resArray:
         ws.write(count, 3 + i, data)
         i = i + 1
-    wb.save('./excel-data/0815patent.xlsx')
+    wb.save(excelName)
 
 
-def action():
-    array = readExcel()
+def action(pageIndex):
+    array = readExcel(pageIndex)
     # resRes = []
     tag_row = 1
     count = 0
@@ -191,7 +194,7 @@ def action():
                 oneCompanyRes.append(date)
 
             print "正在放入缓存list:当前位置:%d"%tag_row
-            writeExcel(oneCompanyRes, tag_row)
+            writeExcel(oneCompanyRes, tag_row,pageIndex)
             tag_row += 1
             count += 1
             print ''
@@ -280,5 +283,11 @@ def parseDate(html):
 
 
 if __name__ == "__main__":
-    action()
+    # action()
     # print getProxyIp()
+    poolProcess = Pool(4)
+    for i in range(1,4):
+        poolProcess.apply_async(action,args=(i,))
+    poolProcess.close()
+    poolProcess.join()
+    print 'the processes end'

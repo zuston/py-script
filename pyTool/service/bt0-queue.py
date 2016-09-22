@@ -14,7 +14,7 @@ for i in range(1,2235):
     [code,msg,res] = http.open(url)
 
     if code == 200:
-        bs = BeautifulSoup(res,'lxml')
+        bs = BeautifulSoup(res)
         page = bs.select('.browse-movie-bottom')
         for pg in page:
             movieUrl = pg.a['href'].split('.')[0].split('_')[1]
