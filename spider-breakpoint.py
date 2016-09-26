@@ -206,12 +206,17 @@ def action(pageIndex):
     print "已经结束"
 
 def loopPost(data,cname,startYear,endYear):
+    global redisConn
     if(data==-2):
         global proxyIpFlag
         proxyIpFlag = 1
         global ip2port
-        [ip,port] = getProxyIp()
-        ip2port = ip + ":" + port
+        # [ip,port] = getProxyIp()
+        # ip2port = ip + ":" + port
+        ip2port = redisConn.spop('proxy')
+        proxyCount=redisConn.scard('proxy')
+        if proxyCount==1 or ip2port is None:
+            getProxyIp2Redis()
         print ip2port
         data = postValue(cname, startYear, endYear)
         return loopPost(data,cname,startYear,endYear)
@@ -225,6 +230,7 @@ def appendYearString(year):
 
 
 def getProxyIp():
+    global redisConn
     global page
     ip = ""
     port = ""
@@ -330,14 +336,62 @@ def actionChange(pageIndex):
 
     print "已经结束"
 
+# 获取ip放入redis中
+def getProxyIp2Redis():
+    global redisConn
+    global page
+    ip = ""
+    port = ""
+    _headers = {
+        "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8",
+        "Accept-Encoding": "gzip, deflate, sdch",
+        "Accept-Language": "zh-CN,zh;q=0.8",
+        "Cache-Control": "max-age=0",
+        "Host": "www.xicidaili.com",
+        "Referer": "http://www.xicidaili.com/nn/"+str(page-1),
+        "Upgrade-Insecure-Requests": "1",
+        "User-Agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/46.0.2490.80 Safari/537.36"
+    }
+    _cookies = ""
+
+    url = "http://www.xicidaili.com/nn/"
+
+    _cookies = requests.get("http://www.xicidaili.com/", headers=_headers).cookies
+    r = requests.get(url + str(page), headers=_headers, cookies=_cookies)
+    html_doc = r.text
+
+    status_code = r.status_code
+    groupData = parseDate(html_doc)
+    # print status_code
+    # print groupData
+    r.close()
+
+    # _headers["Referer"] = url + str(i - 1)
+    # 验证ip可用性
+    print '找到当前%d的共有%d个ip'%(page,len(groupData))
+    count=0
+    for key,value in groupData:
+        print key+':'+value
+        ip = key+':'+value
+        redisConn.sadd('proxy',ip)
+
+
 # ------------------------------------------------------------
 # ------------------------------------------------------------
+
+
+def testRedis():
+    global redisConn
+    res = redisConn.spop('hello')
+    print res
 
 
 if __name__ == "__main__":
-    # redisConn = redis.StrictRedis(host='127.0.0.1', port=6379)
-    global mutex
-    mutex = threading.Lock()
+    redisConn = redis.StrictRedis(host='127.0.0.1', port=6379)
+
+    # getProxyIp2Redis()
+    # testRedis()
+
     actionChange(1)
     actionChange(2)
     actionChange(3)
