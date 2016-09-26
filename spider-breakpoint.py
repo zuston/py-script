@@ -23,7 +23,7 @@ proxyIpFlag = 0
 ip2port = ''
 page = 1
 
-excelName = './excel-test/0815.xlsx'
+excelName = './excel-test/0815-new.xlsx'
 
 def postValue(searchContent, startYear, endYear):
     global proxyIpFlag
@@ -54,17 +54,19 @@ def postValue(searchContent, startYear, endYear):
 
 
     if(proxyIpFlag):
+        print '(+)using the ip proxy,address is %s'%ip2port
         proxy_handler = urllib2.ProxyHandler({"http" : ip2port})
         opener = urllib2.build_opener(proxy_handler)
         urllib2.install_opener(opener)
 
     request = urllib2.Request(url, data, values)
     try:
-        response = urllib2.urlopen(request, timeout=5)
-        # print response.info().get('Content-Encoding')
+        response = urllib2.urlopen(request, timeout=15)
+
         pageEncoding = response.info().get('Content-Encoding')
         resData = ''
         data = response.read()
+
         print "(+)正在解析......"
         if pageEncoding == 'gzip':
             buf = StringIO(data)
@@ -74,10 +76,19 @@ def postValue(searchContent, startYear, endYear):
             resData = data
 
         soup = bs(resData)
+        spider_title = soup.title
+        if spider_title is None:
+            spider_title = ''
+        else:
+            spider_title = spider_title.string.strip()
+        # print spider_title
+        # exit(1)
         count = soup.select("input #result_totalCount")
         IpFlag = soup.select("div #error_msg")
-        # print IpFlag[0].h3.string.strip()
-        if count != []:
+        if spider_title == u'404啦-页面没找哦，亲' or spider_title==u'访问受限':
+            print 'current ip has been forbidded'
+            return -2
+        elif count != []:
             print searchContent, "在", startYear, "到", endYear, "期间总计专利数:", count[0].get("value")
             return count[0].get("value")
         elif len(IpFlag) == 1:
@@ -99,16 +110,18 @@ def postValue(searchContent, startYear, endYear):
             return -2
             # exit(1)
 
-        else:
+        elif len(count)==0:
             # print soup.title.string
             # if soup.title.string == "404啦-页面没找哦，亲":
             #     print resData
             #     exit(1)
             print searchContent, "在", startYear, "到", endYear, "期间总计专利数:", "未查到有关专利信息"
             return 0
+        else:
+            print 'have unknown error'
+            return -2
     except Exception:
         print "超时"
-        # exit(1)
         return -2
 
 
@@ -192,8 +205,10 @@ def action(pageIndex):
             threhold = 0
             for year in yearArray:
                 date = postValue(cname, appendYearString(year)[0], appendYearString(year)[1])
+                print date
+                exit(1)
                 # 做判断,能否成功抓取
-                date = loopPost(date,cname,appendYearString(year)[0],appendYearString(year)[1])
+                # date = loopPost(date,cname,appendYearString(year)[0],appendYearString(year)[1])
                 time.sleep(threhold)
                 oneCompanyRes.append(date)
 
@@ -217,7 +232,7 @@ def loopPost(data,cname,startYear,endYear):
         proxyCount=redisConn.scard('proxy')
         if proxyCount==1 or ip2port is None:
             getProxyIp2Redis()
-        print ip2port
+        # print ip2port
         data = postValue(cname, startYear, endYear)
         return loopPost(data,cname,startYear,endYear)
     else:
@@ -326,7 +341,7 @@ def actionChange(pageIndex):
                 time.sleep(threhold)
                 oneCompanyRes.append(date)
 
-            print "正在放入缓存list:当前位置:%d"%tag_row
+            print "append the list:current position:%d"%tag_row
             # mutex.acquire()
             writeExcel(oneCompanyRes, tag_row,pageIndex)
             # mutex.release()
@@ -334,7 +349,7 @@ def actionChange(pageIndex):
             count += 1
             print ''
 
-    print "已经结束"
+    print "has shutdown"
 
 # 获取ip放入redis中
 def getProxyIp2Redis():
@@ -371,7 +386,7 @@ def getProxyIp2Redis():
     print '找到当前%d的共有%d个ip'%(page,len(groupData))
     count=0
     for key,value in groupData:
-        print key+':'+value
+        # print key+':'+value
         ip = key+':'+value
         redisConn.sadd('proxy',ip)
 
