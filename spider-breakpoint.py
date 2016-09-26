@@ -11,6 +11,8 @@ from StringIO import StringIO
 import time
 from bs4 import BeautifulSoup as bs
 import random
+import threading
+import redis
 from multiprocessing import Pool
 
 reload(sys)
@@ -21,7 +23,7 @@ proxyIpFlag = 0
 ip2port = ''
 page = 1
 
-excelName = './excel-test/multi-test.xlsx'
+excelName = './excel-test/0815.xlsx'
 
 def postValue(searchContent, startYear, endYear):
     global proxyIpFlag
@@ -51,14 +53,14 @@ def postValue(searchContent, startYear, endYear):
     data = urllib.urlencode(values)
 
 
-    if(0):
+    if(proxyIpFlag):
         proxy_handler = urllib2.ProxyHandler({"http" : ip2port})
         opener = urllib2.build_opener(proxy_handler)
         urllib2.install_opener(opener)
 
     request = urllib2.Request(url, data, values)
     try:
-        response = urllib2.urlopen(request, timeout=15)
+        response = urllib2.urlopen(request, timeout=5)
         # print response.info().get('Content-Encoding')
         pageEncoding = response.info().get('Content-Encoding')
         resData = ''
@@ -94,8 +96,8 @@ def postValue(searchContent, startYear, endYear):
             # proxyIpFlag = 1
             # ip2port = getProxyIp()[0]+":"+getProxyIp()[1]
             # print ip2port
-            # return -2
-            exit(1)
+            return -2
+            # exit(1)
 
         else:
             # print soup.title.string
@@ -106,8 +108,8 @@ def postValue(searchContent, startYear, endYear):
             return 0
     except Exception:
         print "超时"
-        exit(1)
-        # return -2
+        # exit(1)
+        return -2
 
 
 def expandString(string):
@@ -148,7 +150,7 @@ def readExcel(pageIndex):
 def writeExcel(resArray, tag_row,pageIndex):
     import xlrd
     from xlutils.copy import copy
-
+    global mutex
     rb = xlrd.open_workbook(excelName)
 
     # 通过sheet_by_index()获取的sheet没有write()方法
@@ -156,7 +158,9 @@ def writeExcel(resArray, tag_row,pageIndex):
     wb = copy(rb)
 
     # 通过get_sheet()获取的sheet有write()方法
+    # mutex.acquire()
     ws = wb.get_sheet(pageIndex)
+    # mutex.release()
     count = tag_row
     i = 0
     for data in resArray:
@@ -194,7 +198,7 @@ def action(pageIndex):
                 oneCompanyRes.append(date)
 
             print "正在放入缓存list:当前位置:%d"%tag_row
-            writeExcel(oneCompanyRes, tag_row,pageIndex)
+            # writeExcel(oneCompanyRes, tag_row,pageIndex)
             tag_row += 1
             count += 1
             print ''
@@ -206,7 +210,8 @@ def loopPost(data,cname,startYear,endYear):
         global proxyIpFlag
         proxyIpFlag = 1
         global ip2port
-        ip2port = getProxyIp()[0] + ":" + getProxyIp()[1]
+        [ip,port] = getProxyIp()
+        ip2port = ip + ":" + port
         print ip2port
         data = postValue(cname, startYear, endYear)
         return loopPost(data,cname,startYear,endYear)
@@ -249,6 +254,8 @@ def getProxyIp():
 
     # _headers["Referer"] = url + str(i - 1)
     # 验证ip可用性
+    print '找到当前%d的共有%d个ip'%(page,len(groupData))
+    count=0
     for key,value in groupData:
         # print key,value
         proxy_handler = urllib2.ProxyHandler({"http" : '%s:%s'%(key,value)})
@@ -261,12 +268,14 @@ def getProxyIp():
             response = urllib2.urlopen(request, timeout=3)
             ip = key
             port = value
-            break;
+            break
         except Exception:
             print "(+)正在测试抓起代理ip-------"
+            count = count+1
             continue
+    if count>=len(groupData):
+        return getProxyIp()
     page = random.randint(1,2)
-    print page
     return (ip,port)
 
 def parseDate(html):
@@ -282,12 +291,72 @@ def parseDate(html):
     return ip_data
 
 
+# ------------------------------------------------------------
+# ------------------------------------------------------------
+# 需求变更,导致增加数据
+
+def actionChange(pageIndex):
+    global mutex
+    array = readExcel(pageIndex)
+    # resRes = []
+    tag_row = 1
+    count = 0
+    for cyear, cname in array:
+        if count == 0:
+            print "采集数据位置:", cname
+            tag_row = cname
+            count += 1
+        else:
+            cintYear = int(cyear)
+            f5y = cintYear - 5
+
+            yearArray = [f5y]
+            oneCompanyRes = []
+            threhold = 0
+            for year in yearArray:
+                date = postValue(cname, appendYearString(year)[0], appendYearString(cyear)[1])
+                # 做判断,能否成功抓取
+                date = loopPost(date,cname,appendYearString(year)[0],appendYearString(cyear)[1])
+                time.sleep(threhold)
+                oneCompanyRes.append(date)
+
+            print "正在放入缓存list:当前位置:%d"%tag_row
+            # mutex.acquire()
+            writeExcel(oneCompanyRes, tag_row,pageIndex)
+            # mutex.release()
+            tag_row += 1
+            count += 1
+            print ''
+
+    print "已经结束"
+
+# ------------------------------------------------------------
+# ------------------------------------------------------------
+
+
 if __name__ == "__main__":
-    # action()
+    # redisConn = redis.StrictRedis(host='127.0.0.1', port=6379)
+    global mutex
+    mutex = threading.Lock()
+    actionChange(1)
+    actionChange(2)
+    actionChange(3)
+    actionChange(4)
+    actionChange(5)
+    actionChange(6)
+    actionChange(7)
+    actionChange(8)
+    actionChange(9)
+
     # print getProxyIp()
-    poolProcess = Pool(4)
-    for i in range(1,4):
-        poolProcess.apply_async(action,args=(i,))
-    poolProcess.close()
-    poolProcess.join()
-    print 'the processes end'
+    # poolProcess = Pool(10)
+    # for i in range(1,10):
+    #     poolProcess.apply_async(actionChange,args=(i,))
+    # poolProcess.close()
+    # poolProcess.join()
+    # print 'the processes end'
+    # for i in range(1,10):
+    #     t = threading.Thread(target=actionChange,args=(i,))
+    #     t.start()
+    # t.join()
+    # print 'the process end'
