@@ -51,4 +51,3 @@ class Db(object):
 if __name__ == '__main__':
     a = Db()
     a.getOne()
-
