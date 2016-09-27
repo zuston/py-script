@@ -61,7 +61,7 @@ def postValue(searchContent, startYear, endYear):
 
     request = urllib2.Request(url, data, values)
     try:
-        response = urllib2.urlopen(request, timeout=15)
+        response = urllib2.urlopen(request, timeout=10)
 
         pageEncoding = response.info().get('Content-Encoding')
         resData = ''
@@ -363,13 +363,13 @@ def getProxyIp2Redis():
         "Accept-Language": "zh-CN,zh;q=0.8",
         "Cache-Control": "max-age=0",
         "Host": "www.xicidaili.com",
-        "Referer": "http://www.xicidaili.com/nn/"+str(page-1),
+        "Referer": "http://www.xicidaili.com/nt/"+str(page-1),
         "Upgrade-Insecure-Requests": "1",
         "User-Agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/46.0.2490.80 Safari/537.36"
     }
     _cookies = ""
 
-    url = "http://www.xicidaili.com/nn/"
+    url = "http://www.xicidaili.com/nt/"
 
     _cookies = requests.get("http://www.xicidaili.com/", headers=_headers).cookies
     r = requests.get(url + str(page), headers=_headers, cookies=_cookies)
@@ -389,6 +389,7 @@ def getProxyIp2Redis():
         # print key+':'+value
         ip = key+':'+value
         redisConn.sadd('proxy',ip)
+    page = random.randint(1,2)
 
 
 # ------------------------------------------------------------
