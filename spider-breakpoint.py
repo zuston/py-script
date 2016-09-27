@@ -450,6 +450,8 @@ if __name__ == "__main__":
     actionChange(8)
     actionChange(9)
 
+    actionChange
+
     # print getProxyIp()
     # poolProcess = Pool(10)
     # for i in range(1,10):
