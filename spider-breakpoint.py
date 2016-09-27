@@ -23,7 +23,10 @@ proxyIpFlag = 0
 ip2port = ''
 page = 1
 
+# 已经跑了一些数据了
 excelName = './excel-test/0815-new.xlsx'
+# 测试跑数据
+# excelName = './excel-test/0815.xlsx'
 
 def postValue(searchContent, startYear, endYear):
     global proxyIpFlag
@@ -61,7 +64,7 @@ def postValue(searchContent, startYear, endYear):
 
     request = urllib2.Request(url, data, values)
     try:
-        response = urllib2.urlopen(request, timeout=15)
+        response = urllib2.urlopen(request, timeout=10)
 
         pageEncoding = response.info().get('Content-Encoding')
         resData = ''
@@ -107,6 +110,7 @@ def postValue(searchContent, startYear, endYear):
             # proxyIpFlag = 1
             # ip2port = getProxyIp()[0]+":"+getProxyIp()[1]
             # print ip2port
+            print 'ip error'
             return -2
             # exit(1)
 
@@ -134,7 +138,7 @@ def expandString(string):
     return resStr
 
 
-def readExcel(pageIndex):
+def readExcel(pageIndex,tagRow=-1):
     import xlrd
     book = xlrd.open_workbook(excelName, encoding_override='utf-8')
     sh = book.sheet_by_index(pageIndex)
@@ -144,6 +148,17 @@ def readExcel(pageIndex):
     array = []
     tag_row = 1
     array.append([0, tag_row])
+
+    # 存入redis中
+    if tagRow!=-1:
+        for rx in range(tag_row,sh.nrows):
+            cid = str(((sh.row(rx))[0].value))
+            cid = cid[:-2]
+            cname = ((sh.row(rx))[2]).value
+            array.append([cid,cname])
+        return array
+
+
     for rx in range(1, sh.nrows):
         # print dir((sh.row(rx))[0])
         cid = str(((sh.row(rx))[0].value))
@@ -255,13 +270,13 @@ def getProxyIp():
         "Accept-Language": "zh-CN,zh;q=0.8",
         "Cache-Control": "max-age=0",
         "Host": "www.xicidaili.com",
-        "Referer": "http://www.xicidaili.com/nn/"+str(page-1),
+        "Referer": "http://www.xicidaili.com/nt/"+str(page-1),
         "Upgrade-Insecure-Requests": "1",
         "User-Agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/46.0.2490.80 Safari/537.36"
     }
     _cookies = ""
 
-    url = "http://www.xicidaili.com/nn/"
+    url = "http://www.xicidaili.com/nt/"
 
     _cookies = requests.get("http://www.xicidaili.com/", headers=_headers).cookies
     r = requests.get(url + str(page), headers=_headers, cookies=_cookies)
@@ -317,16 +332,28 @@ def parseDate(html):
 # 需求变更,导致增加数据
 
 def actionChange(pageIndex):
-    global mutex
+    global redisConn
+    # tag_row = redisConn.zscore('erec','epage'+str(pageIndex))
+    # if tag_row is None:
+    #     tag_row = -1
+    # else :
+    #     tag_row = int(tag_row)
+    # array = readExcel(pageIndex,tag_row)
     array = readExcel(pageIndex)
     # resRes = []
-    tag_row = 1
+    # tag_row = 1
     count = 0
     for cyear, cname in array:
         if count == 0:
             print "采集数据位置:", cname
             tag_row = cname
             count += 1
+
+            #   测试redis
+            # if tag_row==-1:
+            #     tag_row = cname
+            # count = count+1
+            # print '采集的位置为:%d' % tag_row
         else:
             cintYear = int(cyear)
             f5y = cintYear - 5
@@ -342,9 +369,8 @@ def actionChange(pageIndex):
                 oneCompanyRes.append(date)
 
             print "append the list:current position:%d"%tag_row
-            # mutex.acquire()
             writeExcel(oneCompanyRes, tag_row,pageIndex)
-            # mutex.release()
+            # saveData2Redis(pageIndex,tag_row,oneCompanyRes)
             tag_row += 1
             count += 1
             print ''
@@ -363,13 +389,13 @@ def getProxyIp2Redis():
         "Accept-Language": "zh-CN,zh;q=0.8",
         "Cache-Control": "max-age=0",
         "Host": "www.xicidaili.com",
-        "Referer": "http://www.xicidaili.com/nn/"+str(page-1),
+        "Referer": "http://www.xicidaili.com/nt/"+str(page-1),
         "Upgrade-Insecure-Requests": "1",
         "User-Agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/46.0.2490.80 Safari/537.36"
     }
     _cookies = ""
 
-    url = "http://www.xicidaili.com/nn/"
+    url = "http://www.xicidaili.com/nt/"
 
     _cookies = requests.get("http://www.xicidaili.com/", headers=_headers).cookies
     r = requests.get(url + str(page), headers=_headers, cookies=_cookies)
@@ -389,7 +415,14 @@ def getProxyIp2Redis():
         # print key+':'+value
         ip = key+':'+value
         redisConn.sadd('proxy',ip)
+    page = random.randint(1,2)
 
+
+def saveData2Redis(pageIndex,tagrow,data):
+    global redisConn
+    # print data[0]
+    redisConn.zadd('epage'+str(pageIndex),data[0],'tag'+str(tagrow))
+    redisConn.zadd('erec',tagrow,'epage'+str(pageIndex))
 
 # ------------------------------------------------------------
 # ------------------------------------------------------------
