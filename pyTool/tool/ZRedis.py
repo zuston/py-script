@@ -6,9 +6,7 @@ import config.DbConfig as config
 
 class ZRedis(object):
     def __init__(self):
-        # if self.redisConn is None:
         self._instanceRedisConn()
-        # self.redisConn
 
     def _instanceRedisConn(self):
         self.redisConn = rd.StrictRedis(host=config.redisDict['host'], port=config.redisDict['port'])
@@ -16,4 +14,4 @@ class ZRedis(object):
 
 if __name__ == '__main__':
     redis = ZRedis()
-    print redis.sadd('hello',3)
+    print redis.redisConn.sadd('hello',3)

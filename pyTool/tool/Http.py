@@ -14,10 +14,10 @@ class Http(object):
     def __init__(self):
         self.proxyFlag = False
 
-    def _openProxy(self):
+    def openProxy(self):
         self.proxyFlag = True
 
-    def _closeProxy(self):
+    def closeProxy(self):
         self.proxyFlag = False
 
     def costTimeDec(func):
