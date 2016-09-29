@@ -1,5 +1,6 @@
 # -*- coding:utf-8 -*-
 
+__author__ = 'zuston'
 import urllib
 import urllib2
 import sys
@@ -24,7 +25,7 @@ ip2port = ''
 page = 1
 
 # 已经跑了一些数据了
-excelName = './excel-test/0815-new.xlsx'
+excelName = '../data/excel-file/0815.xlsx'
 # 测试跑数据
 # excelName = './excel-test/0815.xlsx'
 
@@ -333,15 +334,11 @@ def parseDate(html):
 
 def actionChange(pageIndex):
     global redisConn
-    # tag_row = redisConn.zscore('erec','epage'+str(pageIndex))
-    # if tag_row is None:
-    #     tag_row = -1
-    # else :
-    #     tag_row = int(tag_row)
-    # array = readExcel(pageIndex,tag_row)
-    array = readExcel(pageIndex)
-    # resRes = []
-    # tag_row = 1
+    if lock.acquire():
+        print '%s is reading the excel'%threading.currentThread().getName()
+        array = readExcel(pageIndex)
+        print '%s is releasing the excel'%threading.currentThread().getName()
+        lock.release()
     count = 0
     for cyear, cname in array:
         if count == 0:
@@ -349,11 +346,6 @@ def actionChange(pageIndex):
             tag_row = cname
             count += 1
 
-            #   测试redis
-            # if tag_row==-1:
-            #     tag_row = cname
-            # count = count+1
-            # print '采集的位置为:%d' % tag_row
         else:
             cintYear = int(cyear)
             f5y = cintYear - 5
@@ -369,8 +361,11 @@ def actionChange(pageIndex):
                 oneCompanyRes.append(date)
 
             print "append the list:current position:%d"%tag_row
-            writeExcel(oneCompanyRes, tag_row,pageIndex)
-            # saveData2Redis(pageIndex,tag_row,oneCompanyRes)
+            if lock.acquire():
+                print '%s get the lock'%threading.currentThread().getName()
+                writeExcel(oneCompanyRes, tag_row,pageIndex)
+                print '%s release the lock'%threading.currentThread().getName()
+                lock.release()
             tag_row += 1
             count += 1
             print ''
@@ -440,17 +435,15 @@ if __name__ == "__main__":
     # getProxyIp2Redis()
     # testRedis()
 
-    actionChange(1)
-    actionChange(2)
-    actionChange(3)
-    actionChange(4)
-    actionChange(5)
-    actionChange(6)
-    actionChange(7)
-    actionChange(8)
-    actionChange(9)
-
-    actionChange
+    # actionChange(1)
+    # actionChange(2)
+    # actionChange(3)
+    # actionChange(4)
+    # actionChange(5)
+    # actionChange(6)
+    # actionChange(7)
+    # actionChange(8)
+    # actionChange(9)
 
     # print getProxyIp()
     # poolProcess = Pool(10)
@@ -459,8 +452,9 @@ if __name__ == "__main__":
     # poolProcess.close()
     # poolProcess.join()
     # print 'the processes end'
-    # for i in range(1,10):
-    #     t = threading.Thread(target=actionChange,args=(i,))
-    #     t.start()
-    # t.join()
-    # print 'the process end'
+    lock = threading.Lock()
+    for i in range(1,10):
+        t = threading.Thread(target=actionChange,args=(i,))
+        t.start()
+    t.join()
+    print 'the process end'
