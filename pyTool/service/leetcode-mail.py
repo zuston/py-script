@@ -19,7 +19,7 @@ generateFile = leetcodeScriptPath+'gen.txt'
 def sendMailToZwh(msgInfo,fileNumberList):
     zmail = mail.ZMail()
     attachment = generatePdf(fileNumberList)
-    zmail.sendMail(msgInfo,attachment)
+    # zmail.sendMail(msgInfo,attachment)
     zprint('++成功发送邮件')
 
 def generatePdf(fileNumberList):
@@ -28,7 +28,6 @@ def generatePdf(fileNumberList):
         sys.exit(1)
 
     filelist = chooseWeekFile(fileNumberList)
-    commandSql = 'cat '
     for file in filelist:
         questionName = '====================='+file+'====================='
         commands.getstatusoutput('echo '+questionName+'>>'+generateFile)
@@ -41,6 +40,7 @@ def generatePdf(fileNumberList):
 def chooseWeekFile(fileNumberList=None):
     global leetcodeScriptPath
     fileList = []
+    fileNumber = []
     if fileNumberList is None:
         return autoChooseFile()
     else:
@@ -49,11 +49,19 @@ def chooseWeekFile(fileNumberList=None):
                 if filename.split('#')[0]==filename:
                     if int(filename.split('.')[0]) in fileNumberList:
                         fileList.append(filename)
+                        fileNumber.append(int(filename.split('.')[0]))
                 else:
                     if int(filename.split('#')[0]) in fileNumberList:
                         fileList.append(filename)
+                        fileNumber.append(int(filename.split('#')[0]))
+    for number in fileNumberList:
+        if number not in fileNumber:
+            print '未找到题目号码:'+str(number)
+            print '请确认后重新输入'
+            sys.exit(1)
     return fileList
 
+# 自动判定本周文件
 def autoChooseFile():
     pass
 
@@ -78,5 +86,13 @@ def zprint(content):
 
 
 if __name__ == '__main__':
-    fileNumberList = [53,90]
+    print '+++输入题号,按exit退出输入'
+    fileNumberList = []
+    while(True):
+        number = raw_input('请输入')
+        if number=='exit':
+            break
+        fileNumberList.append(int(number))
+    print '您输入的题号:'
+    print fileNumberList
     sendMailToZwh('我的愿望是世界和平',fileNumberList)
