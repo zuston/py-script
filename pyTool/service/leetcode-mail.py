@@ -14,6 +14,7 @@ import commands
 import shutil
 
 leetcodeScriptPath = '../../data/leetcodeScript/'
+generateFile = leetcodeScriptPath+'gen.txt'
 
 def sendMailToZwh(msgInfo,fileNumberList):
     zmail = mail.ZMail()
@@ -29,13 +30,11 @@ def generatePdf(fileNumberList):
     filelist = chooseWeekFile(fileNumberList)
     commandSql = 'cat '
     for file in filelist:
-        commandSql = commandSql + leetcodeScriptPath + file + ' '
-    commandSql = commandSql+'>>'+leetcodeScriptPath+'gen.txt'
-
-    status,output = commands.getstatusoutput(commandSql)
-    if status==0:
-        zprint('+成功生成本周提交文件,路径'+leetcodeScriptPath+'gen.txt')
-        return leetcodeScriptPath+'gen.txt'
+        questionName = '====================='+file+'====================='
+        commands.getstatusoutput('echo '+questionName+'>>'+generateFile)
+        commands.getstatusoutput('cat '+leetcodeScriptPath+file+'>>'+generateFile)
+    zprint('+成功生成本周提交文件,路径'+leetcodeScriptPath+'gen.txt')
+    return leetcodeScriptPath+'gen.txt'
 
 
 
@@ -79,5 +78,5 @@ def zprint(content):
 
 
 if __name__ == '__main__':
-    fileNumberList = [53]
+    fileNumberList = [53,90]
     sendMailToZwh('我的愿望是世界和平',fileNumberList)
