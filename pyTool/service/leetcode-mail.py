@@ -19,7 +19,7 @@ generateFile = leetcodeScriptPath+'gen.txt'
 def sendMailToZwh(msgInfo,fileNumberList):
     zmail = mail.ZMail()
     attachment = generatePdf(fileNumberList)
-    # zmail.sendMail(msgInfo,attachment)
+    zmail.sendMail(msgInfo,attachment)
     zprint('++成功发送邮件')
 
 def generatePdf(fileNumberList):
