@@ -14,11 +14,6 @@ class Http(object):
     def __init__(self):
         self.proxyFlag = False
 
-    def openProxy(self):
-        self.proxyFlag = True
-
-    def closeProxy(self):
-        self.proxyFlag = False
 
     def costTimeDec(func):
         def wrapper(*args,**kw):
@@ -29,16 +24,6 @@ class Http(object):
             print 'the spider process cost is:',costTime
             return res
         return wrapper
-
-    def proxyDec(proxyFlag):
-        def decorate(func):
-            def wrapper(*args,**kw):
-                if proxyFlag:
-                    pass
-                return func(*args,**kw)
-            return wrapper
-        return decorate
-
 
     @costTimeDec
     def _request(self,url,postValue=None,**headers):
@@ -84,11 +69,18 @@ class Http(object):
         return ip
 
 
+
     def post(self,url,postValue,**headers):
         return self._request(url,postValue,**headers)
 
     def open(self,url,**headers):
         return self._request(url,**headers)
+
+    def openProxy(self):
+        self.proxyFlag = True
+
+    def closeProxy(self):
+        self.proxyFlag = False
 
 
 

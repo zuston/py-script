@@ -1,0 +1,5 @@
+mailAccount = 'zuston@sina.cn'
+mailPwd = '12267020zjf'
+smtpServer = 'smtp.sina.cn'
+popServer = 'pop.sina.cn'
+sendAddr = '731673917@qq.com'
