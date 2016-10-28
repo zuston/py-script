@@ -5,10 +5,13 @@ import gzip
 from StringIO import StringIO
 import sys
 import time
-import ZProxy as proxy
+# import pyTool.tool.ZProxy as proxy
 reload(sys)
 sys.setdefaultencoding("utf8")
 
+'''
+基础爬虫的工具类简单封装
+'''
 class Http(object):
 
     def __init__(self):
@@ -64,8 +67,10 @@ class Http(object):
             return [code,resMsg,page]
 
     def _getProxyIp(self):
-        proxyPool = proxy.ZProxy()
-        ip = proxy.getLastedIp()
+        # TODO: 增加代理接口
+        # proxyPool = proxy.ZProxy()
+        # ip = proxy.getLastedIp()
+        ip = None
         return ip
 
 
@@ -86,7 +91,6 @@ class Http(object):
 
 
 # 缺少代理挂载
-
 if __name__ == '__main__':
     http = Http()
     code,resMsg,page = http.open('http://www.zhihu.com',

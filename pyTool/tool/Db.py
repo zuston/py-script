@@ -3,15 +3,18 @@
 import pymysql.cursors
 import os
 import sys
-sys.path.append('..')
-import config.DbConfig as config
+import pyTool.config.DbConfig as config
 import logging
 
 con = None
 
+'''
+提供mysql数据库的基础工具类
+'''
 class Db(object):
-    def __init__(self):
+    def __init__(self,dbname=None):
         self.__con = self.__getConn()
+        self.dbname = dbname if dbname!=None else config.dbname
 
     def __getConn(self):
         global con
@@ -34,11 +37,12 @@ class Db(object):
     def getOne(self,tableName,whereCondition):
         try:
             with self.__con.cursor() as cursor:
-                sql = 'select * from '+tableName+''+whereCondition
+                sql = 'select * from '+tableName+' '+whereCondition
                 cursor.execute(sql)
                 result = cursor.fetchone()
         finally:
             self.__con.close()
+            return result
 
     def insert(self,sql):
         cursor = self.__con.cursor()

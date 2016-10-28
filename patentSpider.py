@@ -1,5 +1,9 @@
 # -*- coding:utf-8 -*-
 
+'''
+根据excel文件爬取各大企业的专利数据
+'''
+
 __author__ = 'zuston'
 import urllib
 import urllib2
@@ -25,7 +29,7 @@ ip2port = ''
 page = 1
 
 # 已经跑了一些数据了
-excelName = '../data/excel-file/0815.xlsx'
+excelName = './data/excel-file/0815.xlsx'
 # 测试跑数据
 # excelName = './excel-test/0815.xlsx'
 

@@ -6,14 +6,14 @@ __author__ = 'zuston'
 
 import sys
 sys.path.append('..')
-import tool.ZMail as mail
+import pyTool.tool.ZMail as mail
 
 import time
 import os
 import commands
 import shutil
 
-leetcodeScriptPath = '../../data/leetcodeScript/'
+leetcodeScriptPath = './data/leetcodeScript/'
 generateFile = leetcodeScriptPath+'gen.txt'
 
 def sendMailToZwh(msgInfo,fileNumberList):
@@ -24,7 +24,7 @@ def sendMailToZwh(msgInfo,fileNumberList):
 
 def generatePdf(fileNumberList):
     if getGithubToLocal()!=0:
-        zprint('>>请检查你的网络')
+        zprint('--请检查你的网络')
         sys.exit(1)
 
     filelist = chooseWeekFile(fileNumberList)
@@ -45,7 +45,7 @@ def chooseWeekFile(fileNumberList=None):
         return autoChooseFile()
     else:
         for filename in os.listdir(leetcodeScriptPath):
-            if filename!='.git' and filename!='README.md':
+            if filename!='.git' and filename!='README.md' and filename.split('.')[1]!='java':
                 if filename.split('#')[0]==filename:
                     if int(filename.split('.')[0]) in fileNumberList:
                         fileList.append(filename)
@@ -56,8 +56,8 @@ def chooseWeekFile(fileNumberList=None):
                         fileNumber.append(int(filename.split('#')[0]))
     for number in fileNumberList:
         if number not in fileNumber:
-            print '未找到题目号码:'+str(number)
-            print '请确认后重新输入'
+            print '--未找到题目号码:'+str(number)
+            print '--请确认后重新输入'
             sys.exit(1)
     return fileList
 
@@ -70,7 +70,7 @@ def getGithubToLocal():
     if os.path.exists(leetcodeScriptPath):
         shutil.rmtree(leetcodeScriptPath)
     zprint('>>正在下载')
-    status,output = commands.getstatusoutput('git clone git@github.com:zuston/leetcode-c.git '+leetcodeScriptPath)
+    status,output = commands.getstatusoutput('git clone git@github.com:zuston/leetcode.git '+leetcodeScriptPath)
     if status==0:
         zprint('+成功下载至本地')
         zprint('++路径为'+leetcodeScriptPath)
@@ -93,6 +93,7 @@ if __name__ == '__main__':
         if number=='exit':
             break
         fileNumberList.append(int(number))
-    print '您输入的题号:'
+    # msg = raw_input('请输入您要发送的内容:')
+    # print '您输入的题号:'
     print fileNumberList
-    sendMailToZwh('我的愿望是世界和平',fileNumberList)
+    sendMailToZwh('ds',fileNumberList)

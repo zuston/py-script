@@ -2,12 +2,13 @@
 import os
 import sys
 import redis
-sys.path.append('..')
-import config.DbConfig as config
 from bs4 import BeautifulSoup as bs
-import Http
-import config.DbConfig as config
+import pyTool.tool.Http as Http
+import pyTool.config.DbConfig as config
 
+'''
+获取ip代理的工具类
+'''
 class ZProxy(object):
     def __init__(self):
         self.proxyName = config.redisDict['proxyName']

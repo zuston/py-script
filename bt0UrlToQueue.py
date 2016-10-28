@@ -4,7 +4,7 @@ import os
 sys.path.append("..")
 from bs4 import BeautifulSoup
 import redis
-from tool.Http import *
+from pyTool.tool.Http import *
 from multiprocessing.dummy import Pool
 
 redisConn = None
@@ -117,8 +117,3 @@ if __name__ == '__main__':
     print fourTime
     # print fiveTime
     # print sixTime
-
-
-
-
-

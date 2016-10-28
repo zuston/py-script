@@ -2,13 +2,11 @@ import sys
 import time
 import os
 from multiprocessing import Pool
-sys.path.append("..")
 from bs4 import BeautifulSoup
 import redis
-from tool.Http import *
+from pyTool.tool.Http import *
 
 redisConn = redis.StrictRedis(host='127.0.0.1', port=6379)
-
 
 def getData(movieUrl):
     start = time.time()
@@ -32,7 +30,3 @@ if __name__ == '__main__':
         processPool.join()
         print 'all the process end!'
         break
-
-
-
-

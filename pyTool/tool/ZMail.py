@@ -7,9 +7,12 @@ from email.mime.multipart import MIMEMultipart
 from email.utils import parseaddr, formataddr
 import smtplib
 import sys
-sys.path.append('..')
-from config import MailConfig as config
+# 引入配置
+from pyTool.config import MailConfig as config
 
+'''
+发送邮件的工具类
+'''
 class ZMail(object):
     def __init__(self):
         self.mailAccount = config.mailAccount
