@@ -93,7 +93,10 @@ if __name__ == '__main__':
         if number=='exit':
             break
         fileNumberList.append(int(number))
-    # msg = raw_input('请输入您要发送的内容:')
-    # print '您输入的题号:'
+    msg = raw_input('请输入您要发送的内容:')
+    print '您输入的题号:'
     print fileNumberList
-    sendMailToZwh('ds',fileNumberList)
+    print ''
+    print '--------------------------------'
+    print ''
+    sendMailToZwh(msg,fileNumberList)
