@@ -2,4 +2,9 @@
 /.idea
 .DS_Store
 /data/leetcodeScript/
+/data/officerExcel/
+/data/county.xls
+/data/province.xls
+/data/viceProvince.xls
+/data/exportExcel.xls
 dump.rdb
