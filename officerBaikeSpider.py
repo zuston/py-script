@@ -399,7 +399,7 @@ if __name__ == '__main__':
 
     factory = factory()
     factory.exportDataChoice('WORD')
-    factory.setExportFileName("partyWord")
-    factory.importData('县委书记名单.xls')
+    factory.setExportFileName("govWord")
+    factory.importData('县长的名单.xlsx')
     factory.start()
 
