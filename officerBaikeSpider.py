@@ -4,13 +4,14 @@ import sys
 import time
 import os
 import xlrd
-
 from pyTool.tool import const
 
 sys.path.append("..")
 from bs4 import BeautifulSoup as bs
 from pyTool.tool.Http import *
+from pyTool.tool.ZRedis import *
 import xlwt
+from docx import Document
 
 class importExcel(object):
     def __init__(self):
@@ -80,7 +81,7 @@ class exportExcel(exportBase):
             ws = wb.get_sheet(0)
             flag = int(((sh.row(0))[0].value))
             i = 0
-            for line in self.data:
+            for line in self.data[:4]:
                 ws.write(flag, i, unicode(line))
                 i += 1
             ws.write(0,0,flag+1)
@@ -90,10 +91,12 @@ class exportExcel(exportBase):
             sheet = excelWorkBook.add_sheet('sheet1')
             count = 0
             for line in self.data:
-                sheet.write(1,count,line)
+                sheet.write(1,count,unicode(line))
                 count += 1
             sheet.write(0,0,2)
-            excelWorkBook.save(self.exportPath+self.exportName)
+            # print self.exportPath+self.exportName
+            # exit(1)
+            excelWorkBook.save(unicode(self.exportPath+self.exportName))
 
 class exportWord(exportBase):
     def __init__(self):
@@ -111,11 +114,30 @@ class exportWord(exportBase):
         self.data = data
 
     def export(self):
-        pass
+        fileName = self.exportPath+self.exportName
+        if os.path.exists(fileName):
+            document = Document(fileName)
+        else:
+            document = Document()
+            document.add_heading(unicode("县长信息"), 0)
+
+        document.add_heading(unicode(self.data[0]+"  "+self.data[1]), level=3)
+        p = document.add_paragraph("")
+        p.add_run(unicode(self.data[2])).italic = True
+        document.add_paragraph(unicode(self.data[3]))
+        for k,v in self.data[5].items():
+            document.add_paragraph(unicode(str(k)+": "+str(v)))
+        resumeP = document.add_paragraph(unicode("简历："))
+        for list in self.data[4]:
+            resumeP.add_run(unicode(str(list)+"\n"))
+
+        document.save(fileName)
 
 
 '''
 根据数据中的keyword和limitword来进行爬取
+
+核心
 '''
 class spider(object):
     def __init__(self, string):
@@ -142,11 +164,15 @@ class spider(object):
         if existFlag != None:
             tool.echo(self.keyword + '  未找到此人的关联信息')
             return ERROR.DATANONE, 'error'
-        polysemant = self.soup.find('div', class_='polysemant-list polysemant-list-normal')
+        polysemant = self.soup.find('div', class_='polysemant-list')
         if polysemant == None:
             # 需要核实无异议的项目
             tool.echo(self.keyword + ' 无异议')
-            return ERROR.LEVEL1, self.parserData(res)
+            code,res = ERROR.LEVEL1, self.parserData(res)
+            for i in limitWord:
+                if i in res.simpleInfo:
+                    return code, res
+            return ERROR.DATANONE,'error'
         else:
             max = [0, '']
             for line in polysemant.findAll('li'):
@@ -196,7 +222,7 @@ class spider(object):
         if complexParam != None:
             for line in complexParam.findAll('dl', class_='basicInfo-block'):
                 for one in line.findAll('dt', class_='name'):
-                    complexParamDict[one.string] = one.find_next_sibling('dd', class_='value').string
+                    complexParamDict[str(one.string).strip()] = str(one.find_next_sibling('dd', class_='value').string).strip()
 
         return self.instanceBean([keyword, simpleInfo, complexInfoList, complexParamDict])
 
@@ -260,8 +286,14 @@ class factory(object):
         self.importChoice = None
 
         self.exportInstance = None
-        self.exportDict = {'EXCEL':exportExcel(),}
+        self.exportDict = {'EXCEL':exportExcel(),'WORD':exportWord()}
         self.exportChoice = None
+
+        self.exportPath = "./data/baikeOfficer/"
+        self.exportFilename = "a.txt"
+
+        self.redisConn = ZRedis()
+        self.redisConn.setContainerName("baikeSet")
 
     def importData(self,filename):
         producer = filename.split('.')[1]
@@ -270,12 +302,30 @@ class factory(object):
         if self.importDict.has_key(self.importChoice):
             producerInstance = self.importDict[self.importChoice]
             self.importInstance = producerInstance
-            self.data = producerInstance.load(filename)
+            # 断点进行，如果redis中无数据，则进行导入数据，如果有，则不导入
+            if os.path.exists(self.exportPath+self.exportFilename) is False:
+                print 'flush the redis'
+                self.redisConn.flush()
+            if self.isRedisEmpty():
+                print "++++import data from excel file"
+                self.data = producerInstance.load(filename)
+                self.pushRedis()
         else:
             raise Exception('fail to choose the file')
 
+    def pushRedis(self):
+        print '++++push data to redis'
+        for one in self.data:
+            self.redisConn.push(one)
+
+    def popRedis(self):
+        return self.redisConn.pop()
+
+    def isRedisEmpty(self):
+        return self.redisConn.isEmpty()
+
     def exportDataChoice(self,choice):
-        self.exportChoice = 'EXCEL'
+        self.exportChoice = choice
 
     def exportData(self,data,path,saveFilename):
         if self.exportDict.has_key(self.exportChoice):
@@ -285,27 +335,59 @@ class factory(object):
         else:
             raise Exception("chioce is error")
 
+    def setExportFileName(self,filename):
+        suffixDict = {"EXCEL":"xlsx","WORD":"docx"}
+        self.exportFilename = filename+"."+suffixDict[self.exportChoice]
+
     def start(self):
-        count = 1
-        for i in self.data:
+        errorCount = 0
+        # for i in self.data:
+        #     dataList = i.split(':')[:-1]
+        #     s = spider(i)
+        #     data = s.start()
+        #     code,res = data
+        #     if code<0:
+        #         res = [ERROR.msg[code],]
+        #         errorCount += 1
+        #     else:
+        #         keyword = res.keyword
+        #         simpleInfo = res.simpleInfo
+        #         complexInfoList = res.complexInfoList if res.complexInfoList!=None else ["",]
+        #         complexParamDict = res.complexParamDict if res.complexParamDict!=None else {"":"",}
+        #         dataList.append(keyword)
+        #         dataList.append(simpleInfo)
+        #         dataList.append(complexInfoList)
+        #         dataList.append(complexParamDict)
+        #     #     todo
+        #         self.exportData(dataList,self.exportPath,self.exportFilename)
+        #         time.sleep(2)
+
+
+        while self.isRedisEmpty()==False:
+            print "rest request number:"+str(self.redisConn.len())
+            i = self.popRedis()
             dataList = i.split(':')[:-1]
             s = spider(i)
             data = s.start()
             code,res = data
             if code<0:
                 res = [ERROR.msg[code],]
+                errorCount += 1
             else:
                 keyword = res.keyword
                 simpleInfo = res.simpleInfo
-                complexInfoList = res.complexInfoList
-                complexParamDict = res.complexParamDict
+                complexInfoList = res.complexInfoList if res.complexInfoList!=None else ["",]
+                complexParamDict = res.complexParamDict if res.complexParamDict!=None else {"":"",}
                 dataList.append(keyword)
                 dataList.append(simpleInfo)
+                dataList.append(complexInfoList)
+                dataList.append(complexParamDict)
             #     todo
-            self.exportData(dataList,'./data/','exportExcel.xls')
-            count += 1
-            if count ==10:
-                exit(1)
+                self.exportData(dataList,self.exportPath,self.exportFilename)
+                # time.sleep(1)
+
+        print ""
+        print "未捕获到的信息:"+str(errorCount)
 
 
 if __name__ == '__main__':
@@ -316,7 +398,8 @@ if __name__ == '__main__':
     #     s.start()
 
     factory = factory()
-    factory.exportDataChoice('EXCEL')
+    factory.exportDataChoice('WORD')
+    factory.setExportFileName("partyWord")
     factory.importData('县委书记名单.xls')
     factory.start()
 

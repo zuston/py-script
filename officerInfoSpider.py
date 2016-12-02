@@ -11,6 +11,8 @@ sys.path.append("..")
 from bs4 import BeautifulSoup as bs
 from pyTool.tool.Http import *
 import xlwt
+from docx import Document
+from docx.shared import Pt
 
 '''
 bean类文件
@@ -51,6 +53,41 @@ class bean(object):
         self.name = name
     def setDuty(self,duty):
         self.duty = duty
+
+class common(object):
+    def __init__(self):
+        pass
+
+    @staticmethod
+    def write2Word(fileName,list):
+        length = len(list)
+        dictInfo = {11:"县级",10:"副省级",9:"省级"}
+        if(os.path.exists(fileName)):
+            document = Document(fileName)
+        else:
+            document = Document()
+            document.add_heading(unicode(dictInfo[length]+"领导信息"), 0)
+
+        headerDict = {11:list[0]+" "+list[1]+" "+list[2],
+                      10:list[0]+" "+list[1],
+                      9:list[0]}
+        document.add_heading(unicode(headerDict[length]),level=3)
+
+        offset = 11-length
+
+        p = document.add_paragraph("")
+        p.add_run(unicode(list[3-offset])).italic = True
+        p.add_run(unicode("    "+list[5-offset]))
+        document.add_paragraph(unicode("生年:  "+list[7-offset]))
+        document.add_paragraph(unicode("性别:  "+list[6-offset]))
+        document.add_paragraph(unicode("籍贯:  "+list[8-offset]))
+        document.add_paragraph(unicode("学历:  "+list[9-offset]))
+        document.add_paragraph(unicode("简历:  "+list[10-offset]))
+        document.add_paragraph(unicode(""))
+
+        document.save(fileName)
+
+
 '''
 县级领导信息收集
 '''
@@ -60,6 +97,7 @@ class county(object):
         self.baseUrl = "http://ldzl.people.com.cn/dfzlk/front/"
         self.excelFileName = './data/county.xls'
         self.startUrl = 'http://ldzl.people.com.cn/dfzlk/front/xian1.htm'
+        self.wordFileName = './data/officerWord/county.docx'
 
     def start(self):
         http = Http()
@@ -161,9 +199,12 @@ class county(object):
                     govList = [govProvince, govPostionCity, govPostionArea, govCommitteeName, "政府领导",
                                govCommitteePosition, govCommitteeSex, govCommitteeBirth, govCommitteeNativePlace,
                                govCommitteeEducation, govCommitteeResume]
-                    self.flag = county.write2excel(self.flag,self.excelFileName,govList)
-                    self.flag = county.write2excel(self.flag,self.excelFileName,partyList)
+                    # self.flag = county.write2excel(self.flag,self.excelFileName,govList)
+                    # self.flag = county.write2excel(self.flag,self.excelFileName,partyList)
                     # time.sleep(2)
+                    common.write2Word(self.wordFileName,govList)
+                    common.write2Word(self.wordFileName,partyList)
+
     @staticmethod
     def resumeInfo(url,baseUrl):
         resList = list()
@@ -223,6 +264,27 @@ class county(object):
             wb.save(excelFileName)
         return flag
 
+    @staticmethod
+    def write2Word(fileName,list):
+        flag = True
+        if(os.path.exists(fileName)):
+            document = Document(fileName)
+        else:
+            document = Document()
+            document.add_heading(u'领导信息', 0)
+
+        document.add_heading(unicode(list[0].strip()+" "+list[1]+" "+list[2]),level=3)
+        p = document.add_paragraph("")
+        p.add_run(unicode(list[3])).italic = True
+        p.add_run(unicode("    "+list[5]))
+        document.add_paragraph(unicode("生年:  "+list[7]))
+        document.add_paragraph(unicode("性别:  "+list[6]))
+        document.add_paragraph(unicode("籍贯:  "+list[8]))
+        document.add_paragraph(unicode("学历:  "+list[9]))
+        document.add_paragraph(unicode("简历:  "+list[10]))
+        document.add_paragraph(unicode(""))
+
+        document.save(fileName)
 
 '''
 副省级领导抓取
@@ -233,6 +295,8 @@ class viceProvince(object):
         self.baseRoot = 'http://ldzl.people.com.cn/dfzlk/front/'
         self.flag = 0
         self.excelFileName = './data/viceProvince.xls'
+        self.wordFileName = './data/officerWord/viceProvince.docx'
+
 
     def start(self):
         http = Http()
@@ -285,9 +349,12 @@ class viceProvince(object):
 
                     partyList = [partyBean.province,partyBean.city,partyBean.name,'党委书记',partyBean.position,partyBean.sex,partyBean.birth,partyBean.nativePlace,partyBean.education,partyBean.resume]
                     govList = [govBean.province,govBean.city,govBean.name,'政府一把手',govBean.position,govBean.sex,govBean.birth,govBean.nativePlace,govBean.education,govBean.resume]
-                    self.flag = viceProvince.write2excel(self.flag, self.excelFileName, partyList)
-                    self.flag = viceProvince.write2excel(self.flag, self.excelFileName, govList)
-                    print '++++++++++写入至xls文件中的  '+str(self.flag-2)+'  和  '+str(self.flag-1)+'  行'
+                    # self.flag = viceProvince.write2excel(self.flag, self.excelFileName, partyList)
+                    # self.flag = viceProvince.write2excel(self.flag, self.excelFileName, govList)
+                    # print '++++++++++写入至xls文件中的  '+str(self.flag-2)+'  和  '+str(self.flag-1)+'  行'
+                    common.write2Word(self.wordFileName,partyList)
+                    common.write2Word(self.wordFileName,govList)
+                    print "正在写入"
         else:
             print 'network error'
             exit(1)
@@ -334,6 +401,8 @@ class province(object):
         self.baseRoot = 'http://ldzl.people.com.cn/dfzlk/front/'
         self.flag = 0
         self.excelFileName = './data/province.xls'
+        self.wordFileName = './data/officerWord/province.docx'
+
 
     def start(self):
         print '++++++++++++省级领导信息+++++++++++++'
@@ -370,8 +439,10 @@ class province(object):
                             officer.setResume(govRes[5])
 
                     officerList = [officer.province,officer.name,officer.duty,officer.position,officer.sex,officer.birth,officer.nativePlace,officer.education,officer.resume]
-                    self.flag = self.writeToexcel(self.flag,self.excelFileName,officerList)
-                    print name+'  已经写入 '+self.excelFileName+' 的 '+str(self.flag-1)+' 行'
+                    # self.flag = self.writeToexcel(self.flag,self.excelFileName,officerList)
+                    # print name+'  已经写入 '+self.excelFileName+' 的 '+str(self.flag-1)+' 行'
+                    common.write2Word(self.wordFileName,officerList)
+                    print name + "  已经写入"
                 print '-------------------------'
 
 
@@ -445,15 +516,21 @@ def test():
 
     print'  职位:' + govCommitteePosition + '  性别:' + govCommitteeSex + '  生年:' + govCommitteeBirth + '  籍贯:' + govCommitteeNativePlace + '  教育:' + govCommitteeEducation
 
+def testWord():
+    list = ["福建省","福州市","鼓楼区","杭东","","区委书记"]
+    county.write2Word("./data/word.docx",list)
+    county.write2Word("./data/word.docx",list)
+
 
 
 if __name__ == '__main__':
 
-    vp = viceProvince()
-    vp.start()
+    # testWord()
+    # vp = viceProvince()
+    # vp.start()
 
-    # county = county()
-    # county.start()
+    county = county()
+    county.start()
 
     # province = province()
     # province.start()
