@@ -15,7 +15,7 @@ from docx import Document
 
 class importExcel(object):
     def __init__(self):
-        self.dataPath = '/home/zuston/dev/project/py-script/data/officerExcel/'
+        self.dataPath = './data/officerExcel/'
 
     def load(self, fileName):
         list = []
@@ -115,7 +115,7 @@ class exportWord(exportBase):
 
     def export(self):
         fileName = self.exportPath+self.exportName
-	try:
+        try:
             if os.path.exists(fileName):
                 document = Document(fileName)
             else:
@@ -157,12 +157,11 @@ class spider(object):
     def start(self):
         code, msg, res = self.http.open(self.requestUrl + self.keyword)
         if code == 200:
-	    try:
-	        result = self.analyze(res,self.limitWord)
-		return result
-	    except Exception:
-		return -3,'parser error'
-           # return self.analyze(res, self.limitWord)
+            try:
+                result = self.analyze(res,self.limitWord)
+                return result
+            except Exception:
+                return ERROR.PARSEERROR,'parse error'
         else:
             return ERROR.NETWORK,'network failure'
 
@@ -271,6 +270,7 @@ class ERROR(object):
     # priority 3
     LEVEL3 = const.LEVEL3
 
+
     msg = {
         NETWORK:"network error",
         DATANONE:"have none data",
@@ -300,7 +300,7 @@ class factory(object):
         self.exportDict = {'EXCEL':exportExcel(),'WORD':exportWord()}
         self.exportChoice = None
 
-        self.exportPath = "/home/zuston/dev/project/py-script/data/baikeOfficer/"
+        self.exportPath = "./data/baikeOfficer/"
         self.exportFilename = "a.txt"
 
         self.redisConn = ZRedis()
@@ -382,6 +382,8 @@ class factory(object):
             data = s.start()
             code,res = data
             if code<0:
+                if code == ERROR.PARSEERROR:
+                    print res
                 res = [ERROR.msg[code],]
                 errorCount += 1
             else:
@@ -410,7 +412,7 @@ if __name__ == '__main__':
 
     factory = factory()
     factory.exportDataChoice('WORD')
-    factory.setExportFileName("partyWord3")
+    factory.setExportFileName("partyWord4")
     factory.importData('县委书记名单.xls')
     factory.start()
 

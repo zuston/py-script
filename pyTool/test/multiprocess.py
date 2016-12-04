@@ -5,6 +5,7 @@ import time
 import random
 import multiprocessing
 
+
 def putQueue(q):
     for value in range(5):
         print "放入队列中:",value
