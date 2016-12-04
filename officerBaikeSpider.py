@@ -15,7 +15,7 @@ from docx import Document
 
 class importExcel(object):
     def __init__(self):
-        self.dataPath = './data/officerExcel/'
+        self.dataPath = '/home/zuston/dev/project/py-script/data/officerExcel/'
 
     def load(self, fileName):
         list = []
@@ -115,23 +115,26 @@ class exportWord(exportBase):
 
     def export(self):
         fileName = self.exportPath+self.exportName
-        if os.path.exists(fileName):
-            document = Document(fileName)
-        else:
-            document = Document()
-            document.add_heading(unicode("县长信息"), 0)
+	try:
+            if os.path.exists(fileName):
+                document = Document(fileName)
+            else:
+                document = Document()
+                document.add_heading(unicode("县长信息"), 0)
 
-        document.add_heading(unicode(self.data[0]+"  "+self.data[1]), level=3)
-        p = document.add_paragraph("")
-        p.add_run(unicode(self.data[2])).italic = True
-        document.add_paragraph(unicode(self.data[3]))
-        for k,v in self.data[5].items():
-            document.add_paragraph(unicode(str(k)+": "+str(v)))
-        resumeP = document.add_paragraph(unicode("简历："))
-        for list in self.data[4]:
-            resumeP.add_run(unicode(str(list)+"\n"))
+            document.add_heading(unicode(self.data[0]+"  "+self.data[1]), level=3)
+            p = document.add_paragraph("")
+            p.add_run(unicode(self.data[2])).italic = True
+            document.add_paragraph(unicode(self.data[3]))
+            for k,v in self.data[5].items():
+                document.add_paragraph(unicode(str(k)+": "+str(v)))
+            resumeP = document.add_paragraph(unicode("简历："))
+            for list in self.data[4]:
+                resumeP.add_run(unicode(str(list)+"\n"))
 
-        document.save(fileName)
+            document.save(fileName)
+        except Exception:
+            print 'fail to save to word'
 
 
 '''
@@ -154,7 +157,12 @@ class spider(object):
     def start(self):
         code, msg, res = self.http.open(self.requestUrl + self.keyword)
         if code == 200:
-            return self.analyze(res, self.limitWord)
+	    try:
+	        result = self.analyze(res,self.limitWord)
+		return result
+	    except Exception:
+		return -3,'parser error'
+           # return self.analyze(res, self.limitWord)
         else:
             return ERROR.NETWORK,'network failure'
 
@@ -246,6 +254,7 @@ class bean(object):
 class ERROR(object):
     const.NETWORK = -1
     const.DATANONE = -2
+    const.PARSEERROR = -3
     const.LEVEL1 = 1
     const.LEVEL2 = 2
     const.LEVEL3 = 3
@@ -254,6 +263,7 @@ class ERROR(object):
     NETWORK = const.NETWORK
     # have none data
     DATANONE = const.DATANONE
+    PARSEERROR = const.PARSEERROR
     # priority 1
     LEVEL1 = const.LEVEL1
     # priority 2
@@ -266,7 +276,8 @@ class ERROR(object):
         DATANONE:"have none data",
         LEVEL1:"confidence level-1",
         LEVEL2:"confidence level-2",
-        LEVEL3:"confidence level-3"
+        LEVEL3:"confidence level-3",
+        PARSEERROR:"parser error"
     }
 
 class tool(object):
@@ -289,11 +300,11 @@ class factory(object):
         self.exportDict = {'EXCEL':exportExcel(),'WORD':exportWord()}
         self.exportChoice = None
 
-        self.exportPath = "./data/baikeOfficer/"
+        self.exportPath = "/home/zuston/dev/project/py-script/data/baikeOfficer/"
         self.exportFilename = "a.txt"
 
         self.redisConn = ZRedis()
-        self.redisConn.setContainerName("baikeSet")
+        self.redisConn.setContainerName("baikeSet3")
 
     def importData(self,filename):
         producer = filename.split('.')[1]
@@ -399,7 +410,7 @@ if __name__ == '__main__':
 
     factory = factory()
     factory.exportDataChoice('WORD')
-    factory.setExportFileName("govWord")
-    factory.importData('县长的名单.xlsx')
+    factory.setExportFileName("partyWord3")
+    factory.importData('县委书记名单.xls')
     factory.start()
 
