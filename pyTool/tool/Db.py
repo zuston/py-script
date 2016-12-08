@@ -3,7 +3,6 @@
 import pymysql.cursors
 import os
 import sys
-import pyTool.config.DbConfig as config
 import logging
 
 con = None
@@ -13,19 +12,27 @@ con = None
 '''
 class Db(object):
     def __init__(self,dbname=None):
+        self.config = {
+            'host': 'localhost',
+            'user': 'root',
+            'password': 'shacha',
+            'dbname': 'todo',
+            'charset': 'utf8mb4',
+        }
+        self.dbname = dbname if dbname!=None else self.config['dbname']
         self.__con = self.__getConn()
-        self.dbname = dbname if dbname!=None else config.dbname
+
 
     def __getConn(self):
         global con
         if not con:
             print 'new connection'
             logging.info('new connection')
-            connection = pymysql.connect(host=config.host,
-                                         user=config.user,
-                                         password=config.password,
-                                         db=config.dbname,
-                                         charset=config.charset,
+            connection = pymysql.connect(host=self.config['host'],
+                                         user=self.config['user'],
+                                         password=self.config['password'],
+                                         db=self.dbname,
+                                         charset=self.config['charset'],
                                          cursorclass=pymysql.cursors.DictCursor)
             con = connection
             return connection
@@ -34,24 +41,42 @@ class Db(object):
             return con
 
 
-    def getOne(self,tableName,whereCondition):
+    def getOne(self,tableName,whereCondition=None):
+        if whereCondition is None:
+            whereCondition = ''
+        result = None
         try:
             with self.__con.cursor() as cursor:
                 sql = 'select * from '+tableName+' '+whereCondition
+                # sql = tableName
                 cursor.execute(sql)
                 result = cursor.fetchone()
         finally:
-            self.__con.close()
+            # self.__con.close()
             return result
 
     def insert(self,sql):
-        cursor = self.__con.cursor()
-        res = cursor.execute(sql)
-        pass
+        result = 0
+        try:
+            with self.__con.cursor() as cursor:
+                result = cursor.execute(sql)
+        finally:
+            # self.__con.close()
+            return result
 
+    def execute(self,sql):
+        result = None
+        try:
+            with self.__con.cursor() as cursor:
+                cursor.execute(sql)
+                result = cursor.fetchall()
+        finally:
+            # self.__con.close()
+            return result
 
 
 
 if __name__ == '__main__':
     a = Db()
-    a.getOne()
+    result = a.execute("select * from thing")
+    print result
